@@ -24,8 +24,8 @@ namespace CompilePalX
         private static Version latestVersion;
         public static string LatestVersion => latestVersion.ToString(isPrerelease ? 2 : 1);
 
-        private const string LatestVersionURL = "https://raw.githubusercontent.com/riggs9162/CompilePal/master/CompilePalX/version.txt";
-        private const string LatestPrereleaseVersionURL = "https://raw.githubusercontent.com/riggs9162/CompilePal/master/CompilePalX/version_prerelease.txt";
+        private const string LatestVersionURL = "https://raw.githubusercontent.com/riggs9162/CompilePal/toolspp/standalone-support/CompilePalX/version.txt";
+        private const string LatestPrereleaseVersionURL = "https://raw.githubusercontent.com/riggs9162/CompilePal/toolspp/standalone-support/CompilePalX/version_prerelease.txt";
 
         private static string MajorUpdateURL = "https://github.com/riggs9162/CompilePal/releases/latest";
         // Tags must be in form: v0major.minor

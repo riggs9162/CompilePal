@@ -26,7 +26,7 @@ CUBEMAPS requires a successful VBSPInfo inspection and a successful game process
 
 Run CUBEMAPS before REPACK. The installed stock GMod VBSPInfo cannot inspect compressed Tools++ output. CompilePal's PACK asset scanner also cannot read compressed BSP lumps; decompress first if packing an already compressed BSP. BSPZIP++ compression support does not remove these application/utility limitations.
 
-The update checker and release links point to `riggs9162/CompilePal`. No automatic installation is performed. This is a draft development branch; no independently published release is implied. The fork's default branch and version files must be deliberately maintained before announcing future releases.
+The update checker and release links point to `riggs9162/CompilePal`. No automatic installation is performed. The fork's default branch is `toolspp/standalone-support`; version files are maintained there. The first fork prerelease is `v029.2`. Use its complete Windows ZIP for a fresh installation; the separate EXE still needs the application's configuration and resource files.
 
 ## Build and regressions
 

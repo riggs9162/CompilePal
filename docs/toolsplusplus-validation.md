@@ -30,7 +30,7 @@ VPK packing and the STATS stage were not exercised end to end. Their utility dep
 
 Cancellation kills the live tool process tree and cancels pending output reads. If a tool exits after spawning a detached child, Windows process-tree termination cannot find that child through the exited parent; cancellation still returns instead of hanging on inherited output pipes.
 
-The updater targets this fork. No release is created by this validation work. No Tools++ binaries, user configurations, content directories, credentials, maps, game assets or private presets are uploaded. Detailed local smoke logs are excluded because they contain machine-specific mounted-content paths.
+The updater targets this fork's `toolspp/standalone-support` default branch. The first fork build is published as prerelease `v029.2` with these runtime limits. No Tools++ binaries, user configurations, content directories, credentials, maps, game assets or private presets are uploaded. Detailed local smoke logs are excluded because they contain machine-specific mounted-content paths.
 
 ## Repeat the portable checks
 

@@ -24,7 +24,9 @@ dotnet publish CompilePalX/CompilePalX.csproj -c Release -r win-x64 --self-conta
 
 The branding uses bright pink `#FF3B9D` with dark text on selected controls. Warning and error severity colors retain their original meaning. The editable icon is [WPF vector artwork](CompilePalX/Branding/CompilePalPlusPlus.xaml); regenerate its Windows icon with `powershell -STA -File CompilePalX/Branding/Export-Icon.ps1`.
 
-CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. This is a development build; no CompilePal++ release has been published yet. The update checker and release links target `riggs9162/CompilePal` and never install updates automatically. Before publishing a fork release, maintainers must update its version files on `master` and publish the corresponding release there.
+CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. Get the complete Windows ZIP from the [CompilePal++ 029.2 prerelease](https://github.com/riggs9162/CompilePal/releases/tag/v029.2). The separately attached EXE is for replacing the executable in an existing complete installation; it still needs the accompanying configuration and resource files.
+
+The default branch is `toolspp/standalone-support`. The update checker reads this branch and links to releases in `riggs9162/CompilePal`; it never installs updates automatically. The Windows workflow tests and publishes build artifacts. Releases are tagged from reviewed commits and supplied with validated builds, without the upstream workflow's automatic version commits.
 
 
 ## Features
