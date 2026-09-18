@@ -11,11 +11,11 @@
             Name="CompileWindow"
 
 
-            Title="Compile Pal X"
+            Title="CompilePal++"
             MinHeight="595" MinWidth="850"
             Height="595" Width="850"
             Closing="MetroWindow_Closing"
-            IconEdgeMode="Aliased" Icon="CompilePalIcon.ico" ShowIconOnTitleBar="False" 
+            Icon="{StaticResource CompilePal.BrandIcon}" ShowIconOnTitleBar="False"
             Activated="MetroWindow_Activated" 
             BorderThickness="1" 
             BorderBrush="{DynamicResource MahApps.Brushes.Accent}" 
@@ -553,7 +553,7 @@
             <Button Name="CompileStartStopButton" Content="Compile" Margin="5,10,0,6" Width="75" Click="CompileStartStopButton_OnClick" IsEnabled="{Binding ElementName=MapListBox, Path=Items.Count}"/>
         </StackPanel>
         <Label Name="UpdateLabel" Visibility="Collapsed"  Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10" MouseLeftButtonUp="UpdateLabel_MouseLeftButtonUp" >
-            <Hyperlink Name="UpdateHyperLink" NavigateUri="https://github.com/ruarai/CompilePal/releases/latest" RequestNavigate="UpdateHyperLink_OnRequestNavigate" Foreground="{StaticResource CompilePal.Brushes.Link}"/>
+            <Hyperlink Name="UpdateHyperLink" NavigateUri="https://github.com/riggs9162/CompilePal/releases/latest" RequestNavigate="UpdateHyperLink_OnRequestNavigate" Foreground="{StaticResource CompilePal.Brushes.Link}"/>
         </Label>
         <Label Name="TimeElapsedLabel" Visibility="Collapsed" Grid.Row="2" VerticalAlignment="Bottom" FontWeight="Bold" HorizontalAlignment="Left" Margin="10" />
     </Grid>

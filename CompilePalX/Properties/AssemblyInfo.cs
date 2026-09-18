@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CompilePalX")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("CompilePal++")]
+[assembly: AssemblyDescription("CompilePal++ with standalone Tools++ support")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CompilePalX")]
+[assembly: AssemblyProduct("CompilePal++")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -1,27 +1,30 @@
 <p align="center">
 	<img
-		alt="Compile Pal"
-		src="http://i.imgur.com/jPEig83.png"
-		width="400"
+		alt="CompilePal++"
+		src="CompilePalX/Branding/CompilePalPlusPlus.svg"
+		width="600"
 	/>
 </p>
 
-<p align="center">Compile Pal is an easy to use wrapper for the Source Engine map compiling tools.</p>
+<p align="center">CompilePal++ is a bright pink fork of Compile Pal with support for standalone Tools++ compilers.</p>
 
-![image](https://user-images.githubusercontent.com/15372675/219901251-38a9dc7a-ab95-42c4-9794-e811521a5e89.png)
+This fork adds standalone VBSP++, VVIS++, VRAD++ and BSPZIP++ selection while retaining Compile Pal's existing preset format and executable name, `CompilePalX.exe`. See the [Tools++ guide](docs/toolsplusplus.md) for configuration, validation and utility requirements. Tools++ binaries must be installed separately.
 
 
 
-## Downloads
+## Build this fork
 
-#### Latest Release
+On Windows with the .NET 10 SDK installed:
 
-[Compile Pal V29](https://github.com/ruarai/CompilePal/releases/latest)
+```powershell
+dotnet run --project ToolsPlusPlus.Tests/ToolsPlusPlus.Tests.csproj -c Release
+dotnet run --project ToolsPlusPlus.ManagerTests/ToolsPlusPlus.ManagerTests.csproj -c Release
+dotnet publish CompilePalX/CompilePalX.csproj -c Release -r win-x64 --self-contained true -o artifacts/win-x64
+```
 
-#### Experimental Releases
-Get the latest features without having to wait. Experimental releases may be unstable, use at your own risk.
+The branding uses bright pink `#FF3B9D` with dark text on selected controls. Warning and error severity colors retain their original meaning. The editable icon is [WPF vector artwork](CompilePalX/Branding/CompilePalPlusPlus.xaml); regenerate its Windows icon with `powershell -STA -File CompilePalX/Branding/Export-Icon.ps1`.
 
-[Compile Pal V29.1](https://github.com/ruarai/CompilePal/releases/tag/v029.1)
+CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. This is a development build; no CompilePal++ release has been published yet. The update checker and release links target `riggs9162/CompilePal` and never install updates automatically. Before publishing a fork release, maintainers must update its version files on `master` and publish the corresponding release there.
 
 
 ## Features
@@ -47,7 +50,7 @@ Get the latest features without having to wait. Experimental releases may be uns
 
 ## Contributing
 
-New features or bugfixes are always welcome. Feel free to create a pull request. We also make good use of any issues [reported to us](https://github.com/ruarai/CompilePal/issues).
+Report issues with this fork in its own repository. For the original project, see [Compile Pal's issue tracker](https://github.com/ruarai/CompilePal/issues).
 
 ### Developers
 - [ruarai](https://github.com/ruarai)

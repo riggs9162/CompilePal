@@ -1,0 +1,19 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DrawingImage x:Key="CompilePal.BrandIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Brush="#FF3B9D">
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,256,256" RadiusX="48" RadiusY="48" />
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                <GeometryDrawing Geometry="M44,128 L108,128 M76,96 L76,160 M148,128 L212,128 M180,96 L180,160">
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#202024" Thickness="20" StartLineCap="Round" EndLineCap="Round" />
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+</ResourceDictionary>

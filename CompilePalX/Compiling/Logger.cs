@@ -36,7 +36,7 @@ namespace CompilePalX.Compiling
             File.Delete(logFile);
 
             // print debug information
-            LogLine($"--- Compile Pal {UpdateManager.CurrentVersion} ---");
+            LogLine($"--- CompilePal++ {UpdateManager.CurrentVersion} ---");
             LogLine($"Runtime: {RuntimeInformation.RuntimeIdentifier}");
             LogLine($"Locale: {CultureInfo.CurrentCulture.Name}");
         }

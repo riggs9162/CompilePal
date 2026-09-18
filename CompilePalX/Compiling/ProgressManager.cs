@@ -16,7 +16,7 @@ namespace CompilePalX
 
         private static TaskbarItemInfo taskbarInfo;
         private static bool ready;
-        private static string defaultTitle = "Compile Pal";
+        private static string defaultTitle = "CompilePal++";
 
         static public void Init(TaskbarItemInfo _taskbarInfo)
         {
@@ -24,7 +24,7 @@ namespace CompilePalX
             ready = true;
 
             TitleChange(
-	            $"{defaultTitle} {UpdateManager.CurrentVersion}X {GameConfigurationManager.GameConfiguration.Name}");
+	            $"{defaultTitle} {UpdateManager.CurrentVersion} {GameConfigurationManager.GameConfiguration.Name}");
         }
 
 
@@ -50,7 +50,7 @@ namespace CompilePalX
 
                     if (progress >= 1)
                     {
-                        TitleChange($"{Math.Floor(progress * 100d)}% - {defaultTitle} {UpdateManager.CurrentVersion}X {GameConfigurationManager.GameConfiguration.Name}");
+                        TitleChange($"{Math.Floor(progress * 100d)}% - {defaultTitle} {UpdateManager.CurrentVersion} {GameConfigurationManager.GameConfiguration.Name}");
 
                         if (ConfigurationManager.Settings.PlaySoundOnCompileCompletion)
                         {
@@ -61,11 +61,11 @@ namespace CompilePalX
                     {
                         taskbarInfo.ProgressState = TaskbarItemProgressState.None;
                         TitleChange(
-	                        $"{defaultTitle} {UpdateManager.CurrentVersion}X {GameConfigurationManager.GameConfiguration.Name}");
+	                        $"{defaultTitle} {UpdateManager.CurrentVersion} {GameConfigurationManager.GameConfiguration.Name}");
                     }
                     else
                     {
-                        TitleChange($"{Math.Floor(progress * 100d)}% - {defaultTitle} {UpdateManager.CurrentVersion}X {GameConfigurationManager.GameConfiguration.Name}");
+                        TitleChange($"{Math.Floor(progress * 100d)}% - {defaultTitle} {UpdateManager.CurrentVersion} {GameConfigurationManager.GameConfiguration.Name}");
                     }
                 });
 

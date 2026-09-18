@@ -25,7 +25,7 @@
         <TextBlock Padding="10, 10, 10, 10" FontSize="25">Conflicting Particle Names</TextBlock>
         <RichTextBox Grid.Row="1" Padding="10, 0, 10, 0" BorderThickness="0" IsReadOnly="True">
             <FlowDocument>
-                <Paragraph Margin="0">Compile Pal was unable to determine which file was being used due to multiple files containing the same particle names</Paragraph>
+                <Paragraph Margin="0">CompilePal++ was unable to determine which file was being used due to multiple files containing the same particle names</Paragraph>
                 <Paragraph Margin="0">Please select one or multiple PCFs to add to the manifest</Paragraph>
             </FlowDocument>
         </RichTextBox>

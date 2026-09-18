@@ -326,7 +326,7 @@ namespace CompilePalX
         void UpdateManager_OnUpdateFound()
         {
             UpdateHyperLink.Inlines.Add(
-	            $"An update is available. Current version is {UpdateManager.CurrentVersion}, latest version is {UpdateManager.LatestVersion}.");
+	            $"A CompilePal++ update is available. Current version is {UpdateManager.CurrentVersion}, latest version is {UpdateManager.LatestVersion}.");
             UpdateHyperLink.NavigateUri = UpdateManager.UpdateURL;
             UpdateLabel.Visibility = Visibility.Visible;
         }
@@ -389,7 +389,7 @@ namespace CompilePalX
 
         public void LoadGameConfiguration(GameConfiguration gameConfiguration)
         {
-            Title = $"Compile Pal {UpdateManager.CurrentVersion}X {gameConfiguration.Name}";
+            Title = $"CompilePal++ {UpdateManager.CurrentVersion} {gameConfiguration.Name}";
 
             PresetConfigListBox.Items.Refresh();
             ConfigDataGrid.Items.Refresh();
@@ -924,7 +924,7 @@ namespace CompilePalX
 
         private void UpdateLabel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-			Process.Start(new ProcessStartInfo("http://www.github.com/ruarai/CompilePal/releases/latest") { UseShellExecute = true });
+			Process.Start(new ProcessStartInfo(UpdateManager.UpdateURL.AbsoluteUri) { UseShellExecute = true });
         }
 
 	    private void ReadOutput_OnChecked(object sender, RoutedEventArgs e)
@@ -1091,7 +1091,7 @@ namespace CompilePalX
 
         private void BugReportButton_OnClick(object sender, RoutedEventArgs e)
         {
-			Process.Start(new ProcessStartInfo("https://github.com/ruarai/CompilePal/issues/") { UseShellExecute = true });
+			Process.Start(new ProcessStartInfo("https://github.com/riggs9162/CompilePal/issues/") { UseShellExecute = true });
             e.Handled = true;
         }
 

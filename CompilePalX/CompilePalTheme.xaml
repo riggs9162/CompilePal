@@ -3,21 +3,19 @@
                     xmlns:options="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                     mc:Ignorable="options">
-    <!--RGB (Red, Green, Blue) = 228, 31, 39-->
-    <!--E41F27-->
-    <Color x:Key="MahApps.Colors.HighlightColor">#FFE41F27</Color>
+    <Color x:Key="MahApps.Colors.HighlightColor">#FFFF3B9D</Color>
 
-    <Color x:Key="MahApps.Colors.Accent">#FFE41F27</Color>
+    <Color x:Key="MahApps.Colors.Accent">#FFFF3B9D</Color>
     <!--60%-->
-    <Color x:Key="MahApps.Colors.Accent2">#FFE41F27</Color>
+    <Color x:Key="MahApps.Colors.Accent2">#FFFF3B9D</Color>
     <!--40%-->
-    <Color x:Key="MahApps.Colors.Accent3">#66E41F27</Color>
+    <Color x:Key="MahApps.Colors.Accent3">#66FF3B9D</Color>
     <!--20%-->
-    <Color x:Key="MahApps.Colors.Accent4">#33E41F27</Color>
+    <Color x:Key="MahApps.Colors.Accent4">#33FF3B9D</Color>
 
     <Color x:Key="MahApps.Colors.ThemeForeground">#FF585855</Color>
     <Color x:Key="MahApps.Colors.ThemeBackground">White</Color>
-    <Color x:Key="MahApps.Colors.IdealForeground">White</Color>
+    <Color x:Key="MahApps.Colors.IdealForeground">#FF202024</Color>
 
     <Color x:Key="CompilePal.Colors.GridBackground">#FFE5E5E5</Color>
     <Color x:Key="CompilePal.Colors.CheckboxDisabled">LightGray</Color>

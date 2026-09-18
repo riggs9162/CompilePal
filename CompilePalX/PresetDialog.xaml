@@ -4,7 +4,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         Height="170" Width="320" MaxHeight="280" MinHeight="280" MaxWidth="320" MinWidth="320"
-                      IconEdgeMode="Aliased" Icon="CompilePalIcon.ico" ShowIconOnTitleBar="False" 
+                      Icon="{StaticResource CompilePal.BrandIcon}" ShowIconOnTitleBar="False"
         Title="Input">
     <controls:MetroWindow.WindowButtonCommands>
         <controls:WindowButtonCommands LightCloseButtonStyle="{StaticResource LightButtonStyle}" LightMinButtonStyle="{StaticResource LightButtonStyle}" LightMaxButtonStyle="{StaticResource LightButtonStyle}"/>
