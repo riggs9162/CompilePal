@@ -8,6 +8,8 @@
 
 <p align="center">CompilePal++ is a bright pink fork of Compile Pal with support for standalone Tools++ compilers.</p>
 
+> **Disclaimer:** CompilePal++ is a fork of [CompilePal](https://github.com/ruarai/CompilePal) and an unofficial Plus Plus tool. It is not supported or endorsed by ficool2.
+
 This fork adds standalone VBSP++, VVIS++, VRAD++ and BSPZIP++ selection while retaining Compile Pal's existing preset format and executable name, `CompilePalX.exe`. See the [Tools++ guide](docs/toolsplusplus.md) for configuration, validation and utility requirements. Tools++ binaries must be installed separately.
 
 
