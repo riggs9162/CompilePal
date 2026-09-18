@@ -20,13 +20,13 @@ public partial class GameConfigurationWindow
         this.DataContext = gc;
     }
 
-    public void Open(GameConfiguration? gc = null, int? index = null)
+    public void Open(GameConfiguration? gc = null, int? index = null, bool modal = false)
     {
         gc ??= new GameConfiguration();
         this.DataContext = gc;
         this.index = index;
-        Show();
-        Focus();
+        if (modal) ShowDialog();
+        else { Show(); Focus(); }
     }
 
 
@@ -37,6 +37,8 @@ public partial class GameConfigurationWindow
         // if index is not null, this is an edit
         if (this.index != null)
         {
+            if (ReferenceEquals(GameConfigurationManager.GameConfiguration, GameConfigurationManager.GameConfigurations[(int)this.index]))
+                GameConfigurationManager.GameConfiguration = config;
             GameConfigurationManager.GameConfigurations[(int)this.index] = config;
             AnalyticsManager.ModifyGameConfiguration(config.Name);
         }
@@ -48,6 +50,7 @@ public partial class GameConfigurationWindow
 
         GameConfigurationManager.SaveGameConfigurations();
         LaunchWindow.Instance?.RefreshGameConfigurationList();
+        MainWindow.Instance?.RefreshGameTools();
         Close();
     }
     protected override void OnClosing(CancelEventArgs e)

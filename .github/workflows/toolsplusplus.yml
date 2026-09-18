@@ -21,6 +21,8 @@ jobs:
         run: dotnet run --project ToolsPlusPlus.Tests/ToolsPlusPlus.Tests.csproj -c Release
       - name: Run compile lifecycle regressions
         run: dotnet run --project ToolsPlusPlus.ManagerTests/ToolsPlusPlus.ManagerTests.csproj -c Release
+      - name: Run workspace and appearance regressions
+        run: dotnet run --project Workspace.Tests/Workspace.Tests.csproj -c Release -r win-x64 -- CompilePalX artifacts/ui-checks
       - name: Build Windows x64 application
         run: dotnet publish CompilePalX/CompilePalX.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o artifacts/CompilePalPlusPlus
       - name: Ensure runtime directories exist

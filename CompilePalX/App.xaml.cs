@@ -19,8 +19,12 @@ namespace CompilePalX
     /// </summary>
     public partial class App : Application
     {
+        private readonly bool isolatedStartup;
+        public App() : this(false) { }
+        internal App(bool isolatedStartup) => this.isolatedStartup = isolatedStartup;
 	    protected override void OnStartup(StartupEventArgs e)
 	    {
+            if (isolatedStartup) return;
 		    // catch all unhandled exceptions and log them
 		    AppDomain.CurrentDomain.UnhandledException += (s, err) => { ExceptionHandler.LogException((Exception)err.ExceptionObject, false); };
 		    DispatcherUnhandledException += (s, err) => { ExceptionHandler.LogException(err.Exception, false); };
@@ -35,6 +39,8 @@ namespace CompilePalX
 
             // store path in registry
             RegistryManager.Write("Path", AppContext.BaseDirectory);
+            AppearanceManager.Initialize();
+            StartupUri = new Uri("GameConfiguration/LaunchWindow.xaml", UriKind.Relative);
         }
     }
 }

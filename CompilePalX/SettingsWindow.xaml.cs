@@ -25,13 +25,30 @@ namespace CompilePalX
         {
             this.DataContext = ConfigurationManager.Settings.Clone();
             InitializeComponent();
+            var preferences = AppearanceManager.Preferences;
+            AppearanceChoice.SelectedValue = preferences.Appearance;
+            CompactChoice.IsChecked = preferences.Compact;
+            RememberChoice.IsChecked = preferences.RememberLayout;
+            FollowChoice.IsChecked = preferences.FollowOutput;
+            LogSizeChoice.Value = preferences.LogFontSize;
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             ConfigurationManager.SaveSettings((Settings) this.DataContext);
+            var preferences = AppearanceManager.Preferences;
+            preferences.Appearance = AppearanceChoice.SelectedValue?.ToString() ?? "System";
+            preferences.Compact = CompactChoice.IsChecked == true;
+            preferences.RememberLayout = RememberChoice.IsChecked == true;
+            preferences.FollowOutput = FollowChoice.IsChecked == true;
+            preferences.LogFontSize = LogSizeChoice.Value ?? 12;
+            AppearanceManager.Save();
+            AppearanceManager.Apply();
+            MainWindow.Instance?.ApplyWorkspacePreferences();
             Close();
         }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
 
         private readonly Regex numberRegex = new Regex("[^0-9]+");
         private void ErrorCacheDurationDays_PreviewTextInput(object sender, TextCompositionEventArgs e)

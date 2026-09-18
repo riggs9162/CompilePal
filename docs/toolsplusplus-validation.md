@@ -47,3 +47,7 @@ dotnet run --project ToolsPlusPlus.Tests/ToolsPlusPlus.Tests.csproj -c Release -
 ```
 
 Use an expected pass count of 1 for a single lighting mode, or 0 to assert that inspection fails without launching the game.
+
+## Workspace update, v029.4
+
+The workspace update passed 62 compiler checks, 32 compile-lifecycle checks (including stage and outcome reporting), and 32 production-WPF workspace checks. The application-assembly smoke suite again passed 42 checks with the same five GAME/CUBEMAPS skips. Private fixture preset bytes remained unchanged. Dark/light workspace content and Settings renderings were inspected, including a 1000 by 680 layout. Windows x64 self-contained publication succeeded. See [workspace validation and manual limits](workspace.md#validation-and-limits).

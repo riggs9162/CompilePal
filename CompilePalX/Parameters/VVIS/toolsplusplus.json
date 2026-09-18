@@ -1,0 +1,156 @@
+[
+  {
+    "Name": "Append content search paths",
+    "Parameter": " -append_search_path",
+    "Description": "Add an extra search path behind the ones from gameinfo.txt Multiple paths can be specified with a , (comma)",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Game base directory",
+    "Parameter": " -basedir",
+    "Description": "Path to the game's base directory, deduced from the mod directory by default",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": true,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "fast (Tools++)",
+    "Parameter": " -fast",
+    "Description": "Only do first quick pass on vis calculations",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Game directory (managed by app)",
+    "Parameter": " -game",
+    "Description": "Path to the mod directory holding gameinfo.txt",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": true,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Prepend content search paths",
+    "Parameter": " -insert_search_path",
+    "Description": "Add an extra search path in front of the ones from gameinfo.txt Multiple paths can be specified with a , (comma)",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "low (Tools++)",
+    "Parameter": " -low",
+    "Description": "Run as an idle-priority process",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Content mount configuration",
+    "Parameter": " -mountcfg",
+    "Description": "Path to a mount.cfg listing extra content to mount Intended for Garry's Mod",
+    "CanHaveValue": true,
+    "Value": "cfg/mount.cfg",
+    "ValueIsFile": true,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": "Compiler default: cfg/mount.cfg."
+  },
+  {
+    "Name": "nosort (Tools++)",
+    "Parameter": " -nosort",
+    "Description": "Don't sort portals (sorting is an optimization)",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "radius_override (Tools++)",
+    "Parameter": " -radius_override",
+    "Description": "Force visibility radius, overrides fog radius",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": "Compiler default: <N>."
+  },
+  {
+    "Name": "report_search_paths (Tools++)",
+    "Parameter": " -report_search_paths",
+    "Description": "Show search paths for assets",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Worker threads",
+    "Parameter": " -threads",
+    "Description": "Number of threads to use. Defaults to max CPU thread count",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": "Compiler default: <N>."
+  },
+  {
+    "Name": "trace (Tools++)",
+    "Parameter": " -trace",
+    "Description": "Writes a linefile that traces the vis from one cluster to another for debugging map vis",
+    "CanHaveValue": true,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": "Compiler default: <N> <N>."
+  },
+  {
+    "Name": "v (Tools++)",
+    "Parameter": " -v",
+    "Description": "Turn on verbose output",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  },
+  {
+    "Name": "verbose (Tools++)",
+    "Parameter": " -verbose",
+    "Description": "Turn on verbose output",
+    "CanHaveValue": false,
+    "Value": null,
+    "ValueIsFile": false,
+    "ValueIsFolder": false,
+    "ToolsPlusPlusOnly": true,
+    "Warning": ""
+  }
+]

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,7 +88,9 @@ namespace CompilePalX
 
         public bool AddCustomParameterButtonEnabled { get => !IsCompiling && !processModeEnabled && selectedProcess != null && selectedProcess.SupportsCustomParameters; }
 
-		public MainWindow()
+		public MainWindow() : this(true) { }
+
+        internal MainWindow(bool initializeBackgroundServices)
         {
 	        Instance = this;
 
@@ -104,11 +106,11 @@ namespace CompilePalX
             CompilePalLogger.OnWriteURL += CompilePalLogger_OnWriteFileLocation;
 
             UpdateManager.OnUpdateFound += UpdateManager_OnUpdateFound;
-            UpdateManager.CheckVersion();
+            if (initializeBackgroundServices) UpdateManager.CheckVersion();
 
-            AnalyticsManager.Launch();
+            if (initializeBackgroundServices) AnalyticsManager.Launch();
             PersistenceManager.Init();
-            ErrorFinder.Init();
+            if (initializeBackgroundServices) ErrorFinder.Init();
 
             ConfigurationManager.AssembleParameters();
             ConfigurationManager.LoadSettings();
@@ -143,6 +145,7 @@ namespace CompilePalX
             };
 
             HandleArgs();
+            InitializeWorkspace();
 
 
             // check to see if running on unsupported platform
@@ -235,7 +238,10 @@ namespace CompilePalX
                 errorLink.TextDecorations = new TextDecorationCollection([underline]);
 
                 OutputParagraph.Inlines.Add(errorLink);
-                CompileOutputTextbox.ScrollToEnd();
+                issueMessages.Add(errorText);
+                logDirty = true;
+                if (AppearanceManager.Preferences.FollowOutput && CompileOutputTextbox.VerticalOffset + CompileOutputTextbox.ViewportHeight >= CompileOutputTextbox.ExtentHeight - 1.0)
+                    CompileOutputTextbox.ScrollToEnd();
 
             });
         }
@@ -265,9 +271,10 @@ namespace CompilePalX
                     textRun.FontWeight = FontWeight.FromOpenTypeWeight((int)fontWeight);
 
                 OutputParagraph.Inlines.Add(textRun);
+                logDirty = true;
 
                 // scroll to end only if already scrolled to the bottom. 1.0 is an epsilon value for double comparison
-                if (CompileOutputTextbox.VerticalOffset + CompileOutputTextbox.ViewportHeight >= CompileOutputTextbox.ExtentHeight - 1.0)
+                if (AppearanceManager.Preferences.FollowOutput && CompileOutputTextbox.VerticalOffset + CompileOutputTextbox.ViewportHeight >= CompileOutputTextbox.ExtentHeight - 1.0)
                     CompileOutputTextbox.ScrollToEnd();
 
                 return textRun;
@@ -281,6 +288,7 @@ namespace CompilePalX
                 foreach (var run in removals)
                 {
                     run.Text = "";
+                    logDirty = true;
                 }
             });
         }
@@ -309,9 +317,10 @@ namespace CompilePalX
                 link.Inlines.Add(textRun);
 
                 OutputParagraph.Inlines.Add(link);
+                logDirty = true;
 
                 // scroll to end only if already scrolled to the bottom. 1.0 is an epsilon value for double comparison
-                if (CompileOutputTextbox.VerticalOffset + CompileOutputTextbox.ViewportHeight >= CompileOutputTextbox.ExtentHeight - 1.0)
+                if (AppearanceManager.Preferences.FollowOutput && CompileOutputTextbox.VerticalOffset + CompileOutputTextbox.ViewportHeight >= CompileOutputTextbox.ExtentHeight - 1.0)
                     CompileOutputTextbox.ScrollToEnd();
 
                 return textRun;
@@ -389,6 +398,7 @@ namespace CompilePalX
 
         public void LoadGameConfiguration(GameConfiguration gameConfiguration)
         {
+            ConfigurationManager.SavePresets();
             Title = $"CompilePal++ {UpdateManager.CurrentVersion} {gameConfiguration.Name}";
 
             PresetConfigListBox.Items.Refresh();
@@ -397,6 +407,11 @@ namespace CompilePalX
 
             // reload parameters incase new game config has a plugin folder
             ConfigurationManager.AssembleParameters();
+            SetSources();
+            PresetConfigListBox.SelectedIndex = 0;
+            UpdateProcessList();
+            CompileProcessesListBox.SelectedIndex = 0;
+            RefreshGameTools();
             AnalyticsManager.SelectGameConfiguration(gameConfiguration.Name);
         }
 
@@ -419,6 +434,8 @@ namespace CompilePalX
             Dispatcher.Invoke(() =>
             {
                 OutputParagraph.Inlines.Clear();
+                issueMessages.Clear();
+                logDirty = true;
             });
 
         }
@@ -426,6 +443,13 @@ namespace CompilePalX
         private void CompilingManager_OnStart()
         {
             IsCompiling = true;
+            OptionCatalog.IsEnabled = false;
+            MapListBox.IsEnabled = false;
+            GameToolsButton.IsEnabled = false;
+            CheckToolsButton.IsEnabled = false;
+            CompileStatusText.Text = "Compiling...";
+            foreach (var process in ConfigurationManager.CompileProcesses) process.WorkspaceStatus = "";
+            CompileStartStopButton.Content = "Cancel";
 
             ConfigDataGrid.IsEnabled = false;
             ProcessDataGrid.IsEnabled = false;
@@ -457,6 +481,12 @@ namespace CompilePalX
         private void CompilingManager_OnFinish()
         {
             IsCompiling = false;
+            OptionCatalog.IsEnabled = true;
+            MapListBox.IsEnabled = true;
+            GameToolsButton.IsEnabled = true;
+            CheckToolsButton.IsEnabled = true;
+            RefreshLogFilter();
+            RefreshQueueSummary();
 
 			//If process grid is enabled, disable config grid
             ConfigDataGrid.IsEnabled = !processModeEnabled;
@@ -491,6 +521,7 @@ namespace CompilePalX
             CompileStartStopButton.Content = "Compile";
 
             ProgressManager.SetProgress(1);
+            UpdateConfigGrid();
         }
 
         private void OnConfigChanged(object sender, RoutedEventArgs e)
@@ -529,6 +560,7 @@ namespace CompilePalX
                 AnalyticsManager.ModifyPreset();
 
                 UpdateParameterTextBox();
+                BuildOptionCatalog();
             }
         }
 
@@ -555,6 +587,7 @@ namespace CompilePalX
             AnalyticsManager.ModifyPreset();
 
             UpdateParameterTextBox();
+            BuildOptionCatalog();
         }
 
         private void AddProcessButton_Click(object sender, RoutedEventArgs e)
@@ -575,6 +608,7 @@ namespace CompilePalX
             AnalyticsManager.ModifyPreset();
 
             UpdateParameterTextBox();
+            BuildOptionCatalog();
             UpdateProcessList();
 
 			if (processModeEnabled)
@@ -716,6 +750,7 @@ namespace CompilePalX
                 }
             }
 
+            SaveWorkspace();
             ConfigurationManager.SavePresets();
             ConfigurationManager.SaveProcesses();
 
@@ -839,9 +874,8 @@ namespace CompilePalX
 
                     UpdateParameterTextBox();
                 }
-
-
             }
+            BuildOptionCatalog();
         }
 
         private void UpdateProcessList()
@@ -870,6 +904,8 @@ namespace CompilePalX
         {
             if (selectedProcess != null)
                 ParametersTextBox.Text = selectedProcess.GetParameterString();
+            if (OptionSummary != null && selectedProcess != null && ConfigurationManager.CurrentPreset != null && selectedProcess.PresetDictionary.TryGetValue(ConfigurationManager.CurrentPreset, out var active))
+                OptionSummary.Text = $"{selectedProcess.Name} · {stageOptions.Count} options · {active.Count} enabled";
         }
 
         private void MetroWindow_Activated(object sender, EventArgs e)
@@ -913,13 +949,23 @@ namespace CompilePalX
         }
 
 
-        private void CompileStartStopButton_OnClick(object sender, RoutedEventArgs e)
+        private async void CompileStartStopButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if (!CompilingManager.IsCompiling)
+            {
+                var findings = WorkspacePreflight.Check(GameConfigurationManager.GameConfiguration, CompilingManager.MapFiles, ConfigurationManager.CompileProcesses);
+                if (findings.Count > 0)
+                {
+                    var answer = await ShowModal("Check the compile setup", string.Join("\n\n", findings),
+                        MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings { AffirmativeButtonText = "Compile anyway", NegativeButtonText = "Go back", DefaultButtonFocus = MessageDialogResult.Negative });
+                    if (answer != MessageDialogResult.Affirmative) return;
+                }
+            }
             CompilingManager.ToggleCompileState();
+            if (CompilingManager.IsCompiling && IsCompiling)
+                CompileStartStopButton.Content = "Cancel";
 
-            CompileStartStopButton.Content = (string)CompileStartStopButton.Content == "Compile" ? "Cancel" : "Compile";
-
-            OutputTab.Focus();
+            CompileOutputTextbox.Focus();
         }
 
         private void UpdateLabel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -937,8 +983,9 @@ namespace CompilePalX
 			//UpdateParameterTextBox();
 	    }
 
-	    private void ProcessTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-	    {
+        private void ProcessTab_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!processModeEnabled) return;
 			if (e.Source is TabControl)
 				OrderManager.UpdateOrder();
 
@@ -1112,7 +1159,7 @@ namespace CompilePalX
 
         private void CopyButton_OnClick(object sender, RoutedEventArgs e)
         {
-            Clipboard.SetText(new TextRange(CompileOutputTextbox.Document.ContentStart, CompileOutputTextbox.Document.ContentEnd).Text);
+            CopyText(new TextRange(CompileOutputTextbox.Document.ContentStart, CompileOutputTextbox.Document.ContentEnd).Text);
         }
         private void PresetActionButton_OnContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
@@ -1143,44 +1190,10 @@ namespace CompilePalX
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            new SettingsWindow().Show();
+            new SettingsWindow { Owner = this }.ShowDialog();
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            // load settings on window opening
-            try
-            {
-                var converter = new GridLengthConverter();
-                if (ConfigurationManager.Settings.MapListHeight is not null)
-                    this.MapListBoxRow.Height = (GridLength)converter.ConvertFromString(ConfigurationManager.Settings.MapListHeight);
-            }
-            catch (Exception ex)
-            {
-                // fail silently, worst case scenario is we use the default height of the list box
-                CompilePalLogger.LogLineDebug($"Failed to load settings on startup: {ex}");
-            }
 
-            base.OnSourceInitialized(e);
-        }
-
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            // save size of map list box on window closing
-            try
-            {
-                var converter = new GridLengthConverter();
-                ConfigurationManager.Settings.MapListHeight = converter.ConvertToString(this.MapListBoxRow.Height);
-
-                ConfigurationManager.SaveSettings();
-            }
-            catch (Exception ex)
-            {
-                // fail silently, worst case scenario is the height of the list box doesnt save
-                CompilePalLogger.LogLineDebug($"Failed while saving settings on shutdown: {ex}");
-            }
-            base.OnClosing(e);
-        }
     }
 
     public static class ObservableCollectionExtension

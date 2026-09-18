@@ -12,6 +12,8 @@ internal static class Program
     private static int passed;
     private static int starts;
     private static int finishes;
+    private static readonly System.Collections.Concurrent.ConcurrentQueue<string> stageStatuses = new();
+    private static string outcome = "";
 
     [STAThread]
     private static int Main()
@@ -23,6 +25,8 @@ internal static class Program
         CompilingManager.OnClear += () => { };
         CompilingManager.OnStart += () => starts++;
         CompilingManager.OnFinish += () => finishes++;
+        CompilingManager.StageChanged += (_, status) => stageStatuses.Enqueue(status);
+        CompilingManager.OutcomeChanged += status => outcome = status;
         try
         {
             CancellationWaitsForWorker();
@@ -63,6 +67,7 @@ internal static class Program
         PumpUntil(() => finishes == 1);
         Check(laterStages == 0, "Cancellation skips remaining stages");
         AssertStopped(original, "Cancellation");
+        Check(stageStatuses.Last() == "Stopped", "Cancelled stage is labelled stopped");
     }
 
     private static void FailureStopsPipeline(bool unexpected)
@@ -80,6 +85,7 @@ internal static class Program
         string scenario = unexpected ? "Unexpected exception" : "Fatal error";
         Check(laterStages == 0, scenario + " skips remaining stages");
         AssertStopped(original, scenario);
+        Check(stageStatuses.Last() == "Failed", scenario + " marks the failed stage");
         if (unexpected)
             Check(CompilePalLogger.Lines.Any(line => line.Contains("Intentional stage exception")), "Unexpected exceptions are logged");
     }
@@ -96,12 +102,16 @@ internal static class Program
             "A successful compile restores the configuration once");
         Check(CompilePalLogger.Lines.Count(line => line.Contains("compile finished")) == 1, "A successful compile logs completion once");
         Check(!ProgressManager.HasError, "A successful compile keeps the success state");
+        Check(stageStatuses.Count(status => status.StartsWith("Finished in")) == 2, "Successful stages report their durations");
+        Check(outcome == "Compile finished", "Successful outcome is shown in the workspace");
     }
 
     private static GameConfiguration Prepare(params Action<CompileContext, CancellationToken>[] handlers)
     {
         starts = 0;
         finishes = 0;
+        stageStatuses.Clear();
+        outcome = "";
         CompilePalLogger.Lines.Clear();
         var original = new GameConfiguration();
         GameConfigurationManager.GameConfiguration = original;
@@ -125,6 +135,7 @@ internal static class Program
             scenario + " restores the configuration once");
         Check(!CompilePalLogger.Lines.Any(line => line.Contains("compile finished")), scenario + " never logs successful completion");
         Check(ProgressManager.HasError, scenario + " marks the progress as unsuccessful");
+        Check(outcome.Contains("stopped before completion"), scenario + " shows an unsuccessful workspace outcome");
     }
 
     private static void PumpUntil(Func<bool> predicate)

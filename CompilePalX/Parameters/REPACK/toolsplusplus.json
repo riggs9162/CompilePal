@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "Worker threads (Tools++)",
+    "Parameter": " -threads",
+    "Description": "Number of threads to use when repacking. Leave disabled to use all CPU threads.",
+    "CanHaveValue": true,
+    "ToolsPlusPlusOnly": true
+  },
+  {
+    "Name": "Verbose repacking (Tools++)",
+    "Parameter": " -verbose",
+    "Description": "Show detailed information about repacking operations.",
+    "CanHaveValue": false,
+    "ToolsPlusPlusOnly": true
+  }
+]

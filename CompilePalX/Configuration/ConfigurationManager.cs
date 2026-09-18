@@ -511,6 +511,14 @@ namespace CompilePalX
             }
 
 
+            string standaloneParameters = Path.Combine(parameterFolder, processName, "toolsplusplus.json");
+            if (File.Exists(standaloneParameters))
+            {
+                var standalone = JsonConvert.DeserializeObject<ConfigItem[]>(File.ReadAllText(standaloneParameters)) ?? [];
+                foreach (var item in standalone)
+                    if (!list.Any(existing => string.Equals(existing.Parameter?.Trim(), item.Parameter?.Trim(), StringComparison.OrdinalIgnoreCase)))
+                        list.Add(item);
+            }
             return list;
         }
 

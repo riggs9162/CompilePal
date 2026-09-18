@@ -1,567 +1,704 @@
-﻿<controls:MetroWindow x:Class="CompilePalX.MainWindow"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-            xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
-            xmlns:local="clr-namespace:CompilePalX"
-            xmlns:config="clr-namespace:CompilePalX.Configuration"
-            xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
-            xmlns:compilePalX="clr-namespace:CompilePalX"
-            xmlns:sys="clr-namespace:System;assembly=mscorlib"
-            Name="CompileWindow"
-
-
-            Title="CompilePal++"
-            MinHeight="595" MinWidth="850"
-            Height="595" Width="850"
-            Closing="MetroWindow_Closing"
-            Icon="{StaticResource CompilePal.BrandIcon}" ShowIconOnTitleBar="False"
-            Activated="MetroWindow_Activated" 
-            BorderThickness="1" 
-            BorderBrush="{DynamicResource MahApps.Brushes.Accent}" 
-        >
-
-    <controls:MetroWindow.LeftWindowCommands>
-        <controls:WindowCommands>
-            <Button Click="ConfigBack_OnClick" ToolTip="Open Game Selector" x:Name="ConfigSelectButton">
-                <iconPacks:Material Kind="Menu" />
-            </Button>
-        </controls:WindowCommands>
-    </controls:MetroWindow.LeftWindowCommands>
-
-    <controls:MetroWindow.RightWindowCommands>
-        <controls:WindowCommands>
-            <Button Click="UnsupportedPlatformButton_OnClick" Foreground="{StaticResource CompilePal.Brushes.Warning}" ToolTip="Unsupported Platform" x:Name="UnsupportedPlatformButton" Visibility="Collapsed">
-                <iconPacks:Material Kind="Alert" />
-            </Button>
-            <Button Click="BugReportButton_OnClick" ToolTip="Report a bug" x:Name="BugReportButton">
-                <iconPacks:Material Kind="Bug" />
-            </Button>
-            <Button Click="SettingsButton_Click" ToolTip="Settings" x:Name="SettingsButton">
-                <iconPacks:Material Kind="Cog" />
-            </Button>
-        </controls:WindowCommands>
-    </controls:MetroWindow.RightWindowCommands>
-
-    <controls:MetroWindow.WindowButtonCommands>
-        <controls:WindowButtonCommands LightCloseButtonStyle="{StaticResource LightButtonStyle}" LightMinButtonStyle="{StaticResource LightButtonStyle}" LightMaxButtonStyle="{StaticResource LightButtonStyle}"/>
-    </controls:MetroWindow.WindowButtonCommands>
-
-    <controls:MetroWindow.Resources>
-        <Style x:Key="GroupListBoxStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-            <Setter Property="Margin" Value="-5, 0, 0, 0" />
-            <Setter Property="Padding" Value="10, 0, 0, 0" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding Items.Groups.Count, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="1">
-                    <Setter Property="Padding" Value="5, 0, 0, 0" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </controls:MetroWindow.Resources>
-
-    <Grid>
+<controls:MetroWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls" xmlns:dialogs="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro" xmlns:local="clr-namespace:CompilePalX" xmlns:config="clr-namespace:CompilePalX.Configuration" xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks" xmlns:compilePalX="clr-namespace:CompilePalX" xmlns:sys="clr-namespace:System;assembly=mscorlib" x:Class="CompilePalX.MainWindow" Name="CompileWindow" Title="CompilePal++" MinHeight="680" MinWidth="1000" Height="820" Width="1240" Closing="MetroWindow_Closing" Icon="{StaticResource CompilePal.BrandIcon}" ShowIconOnTitleBar="False" Activated="MetroWindow_Activated" BorderThickness="1" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" FontFamily="Segoe UI" Background="{DynamicResource CompilePal.Brushes.GridBackground}" PreviewKeyDown="Workspace_PreviewKeyDown" TitleForeground="{DynamicResource MahApps.Brushes.Text}">
+  <controls:MetroWindow.LeftWindowCommands>
+    <controls:WindowCommands>
+      <Button Click="ConfigBack_OnClick" ToolTip="Open Game Selector" x:Name="ConfigSelectButton">
+        <iconPacks:Material Kind="Menu"/>
+      </Button>
+    </controls:WindowCommands>
+  </controls:MetroWindow.LeftWindowCommands>
+  <controls:MetroWindow.RightWindowCommands>
+    <controls:WindowCommands>
+      <Button Click="UnsupportedPlatformButton_OnClick" Foreground="{DynamicResource CompilePal.Brushes.Warning}" ToolTip="Unsupported Platform" x:Name="UnsupportedPlatformButton" Visibility="Collapsed">
+        <iconPacks:Material Kind="Alert"/>
+      </Button>
+      <Button Click="BugReportButton_OnClick" ToolTip="Report a bug" x:Name="BugReportButton">
+        <iconPacks:Material Kind="Bug"/>
+      </Button>
+    </controls:WindowCommands>
+  </controls:MetroWindow.RightWindowCommands>
+  <controls:MetroWindow.WindowButtonCommands>
+    <controls:WindowButtonCommands LightCloseButtonStyle="{StaticResource LightButtonStyle}" LightMinButtonStyle="{StaticResource LightButtonStyle}" LightMaxButtonStyle="{StaticResource LightButtonStyle}"/>
+  </controls:MetroWindow.WindowButtonCommands>
+  <controls:MetroWindow.Resources>
+    <Style x:Key="GroupListBoxStyle" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+      <Setter Property="Margin" Value="-5, 0, 0, 0"/>
+      <Setter Property="Padding" Value="10, 0, 0, 0"/>
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Items.Groups.Count, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="1">
+          <Setter Property="Padding" Value="5, 0, 0, 0"/>
+        </DataTrigger>
+        <Trigger Property="IsSelected" Value="True">
+          <Setter Property="Foreground" Value="#202024"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </controls:MetroWindow.Resources>
+  <Window.TaskbarItemInfo>
+    <TaskbarItemInfo/>
+  </Window.TaskbarItemInfo>
+  <Grid Margin="18,12,18,12">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="60"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="56"/>
+    </Grid.RowDefinitions>
+    <DockPanel Grid.Row="0" LastChildFill="False">
+      <Image Source="{StaticResource CompilePal.BrandIcon}" Width="34" Height="34" Margin="0,0,12,0"/>
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock Text="CompilePal++" FontSize="21" FontWeight="SemiBold"/>
+        <TextBlock Text="COMPILE WORKSPACE" FontSize="10" Opacity="0.65"/>
+      </StackPanel>
+      <Button x:Name="WorkspaceSettingsButton" DockPanel.Dock="Right" Click="SettingsButton_Click" ToolTip="Settings" AutomationProperties.Name="Settings" VerticalAlignment="Center" Margin="12,0,0,0">
+        <iconPacks:PackIconMaterial Kind="Cog" Width="18" Height="18"/>
+      </Button>
+      <Button x:Name="GameToolsButton" DockPanel.Dock="Right" Click="GameTools_Click" Margin="12,0,0,0" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+          <iconPacks:PackIconMaterial Kind="Folder" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+          <TextBlock Text="Game &amp; tools"/>
+        </StackPanel>
+      </Button>
+      <TextBlock x:Name="GameProfileText" DockPanel.Dock="Right" VerticalAlignment="Center" Opacity="0.75"/>
+    </DockPanel>
+    <Grid Grid.Row="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Name="QueueColumn" Width="245" MinWidth="200" MaxWidth="400"/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid x:Name="Sidebar" Grid.Column="0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="89" MinHeight="89" MaxHeight="240" Name="MapListBoxRow"></RowDefinition>
-            <RowDefinition Height="10"></RowDefinition>
-            <RowDefinition></RowDefinition>
+          <RowDefinition x:Name="MapListBoxRow" Height="*" MinHeight="130"/>
+          <RowDefinition Height="8"/>
+          <RowDefinition Height="*" MinHeight="125"/>
         </Grid.RowDefinitions>
-        <ListBox x:Name="MapListBox" Grid.Row="0" Margin="10,10,95,0" BorderBrush="{DynamicResource MahApps.Brushes.Accent}" SelectionChanged="MapListBox_OnSelectionChanged" BorderThickness="2" SelectionMode="Single">
+        <DockPanel x:Name="MapPanel" Background="{DynamicResource CompilePal.Brushes.DockBackground}">
+          <TextBlock DockPanel.Dock="Top" Text="MAP QUEUE" FontWeight="SemiBold" Margin="12"/>
+          <StackPanel x:Name="MapActions" DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="8">
+            <Button x:Name="AddMapButton" Margin="0,0,6,0" Click="AddMapButton_Click">
+              <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconMaterial Kind="Plus" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Add Map"/>
+              </StackPanel>
+            </Button>
+            <Button x:Name="RemoveMapButton" Margin="0,0,6,0" Click="RemoveMapButton_Click">
+              <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconMaterial Kind="Minus" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Remove"/>
+              </StackPanel>
+            </Button>
+          </StackPanel>
+          <ListBox x:Name="MapListBox" SelectionChanged="MapListBox_OnSelectionChanged" SelectionMode="Single" Margin="8,0,8,0" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel HorizontalAlignment="Stretch">
-                        <TextBlock Text="{Binding File}" Margin="0, 0, 5, 0">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Compile}" Value="False">
-                                            <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.TextDisabled}"/>
-                                        </DataTrigger>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True"/>
-                                                <Condition Binding="{Binding Path=Compile}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.IdealForegroundDisabled}"></Setter>
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBlock Text="{Binding Path=Preset.Name, StringFormat=({0})}" Margin="0, 0, 5, 0" FontWeight="SemiBold" Name="selectedPreset">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Gray1}"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Compile}" Value="False">
-                                            <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.Gray3}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <CheckBox IsChecked="{Binding Compile, Mode=TwoWay}" HorizontalAlignment="Right" />
-                    </DockPanel>
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                            <Setter Property="Opacity" Value="0.7" TargetName="selectedPreset"/>
-                            <Setter Property="Foreground" Value="{StaticResource MahApps.Brushes.IdealForeground}" TargetName="selectedPreset"/>
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
-                </DataTemplate>
+              <DataTemplate>
+                <Grid Margin="3,8" ToolTip="{Binding File}">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="26"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <CheckBox IsChecked="{Binding Compile, Mode=TwoWay}" VerticalAlignment="Center" AutomationProperties.Name="Include map"/>
+                  <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding FullMapName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Preset.Name}" FontSize="11" Opacity="0.7"/>
+                  </StackPanel>
+                </Grid>
+              </DataTemplate>
             </ListBox.ItemTemplate>
-        </ListBox>
-        <Button x:Name="AddMapButton"  Grid.Row="0" Content="Add Map" Margin="0,10,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="AddMapButton_Click"/>
-        <Button x:Name="RemoveMapButton"  Grid.Row="0" Content="Remove" Margin="0,45,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="75" Click="RemoveMapButton_Click"/>
-        <GridSplitter Grid.Row="1" Height="3" HorizontalAlignment="Stretch" Width="512"/>
-        <controls:MetroTabControl Grid.Row="2" controls:TabControlHelper.Underlined="SelectedTabItem" controls:TabControlHelper.Transition="LeftReplace" Margin="10,10,10,40">
-            <controls:MetroTabItem Header="CONFIG">
-                <Grid Background="{StaticResource CompilePal.Brushes.GridBackground}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" MinWidth="135"/>
-                        <ColumnDefinition Width="Auto" MinWidth="135"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Column="0" Margin="10,10,0,10" Background="{StaticResource CompilePal.Brushes.DockBackground}">
-                        <DockPanel DockPanel.Dock="Top" Background="{StaticResource CompilePal.Brushes.GridBackground}" Height="30" Margin="0, -5, 0, 0">
-                            <Button x:Name="AddPresetButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 0, 5" Click="AddPresetButton_Click" ToolTip="Add Preset" DockPanel.Dock="Right">
-                                <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
-                            </Button>
-                            <ToggleButton x:Name="FilterPresetButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 3, 5" DockPanel.Dock="Right" IsChecked="{Binding ElementName=CompileWindow, Path=PresetFilterEnabled, Mode=OneWay}" Checked="FilterPresetButton_OnChecked" Unchecked="FilterPresetButton_OnChecked">
-                                <ToggleButton.Style>
-                                    <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsChecked" Value="False">
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:Material Kind="Filter" Height="10" Width="10"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="ToolTip" Value="Filter Presets"/>
-                                            </Trigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter Property="Content">
-                                                    <Setter.Value>
-                                                        <iconPacks:Material Kind="FilterRemove" Height="10" Width="10"/>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Gray10}"/>
-                                                <Setter Property="ToolTip" Value="Show All Presets"/>
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="{StaticResource MahApps.Brushes.Button.Square.Background.MouseOver}"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ToggleButton.Style>
-                            </ToggleButton>
-                            <TextBlock FontSize="16" Margin="0, 0, 0, 5" FontWeight="SemiBold">Preset</TextBlock>
-                        </DockPanel>
-                        <ListBox Name="PresetConfigListBox" SelectionChanged="PresetConfigListBox_SelectionChanged" SelectionMode="Single" ItemContainerStyle="{StaticResource GroupListBoxStyle}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="1*"/>
-                                            <ColumnDefinition Width="auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Name}" Margin="0, 0, 5, 0"/>
-                                        <Button Name="PresetKebabButton" Grid.Column="1" Height="5" Width="15" Padding="0" Margin="0, -8, 0, -8" Visibility="Collapsed" Foreground="White" ContextMenuOpening="PresetActionButton_OnContextMenuOpening" Click="PresetActionButton_OnClick" IsEnabled="{Binding ElementName=PresetConfigListBox, Path=IsEnabled}" controls:ControlsHelper.CornerRadius="0" controls:ControlsHelper.FocusBorderThickness="0">
-                                            <iconPacks:PackIconMaterial Kind="DotsVertical" Height="8" Width="8"/>
-                                            <Button.ContextMenu>
-                                                <ContextMenu Name="PresetActionMenu" Placement="Bottom">
-                                                    <MenuItem Header="Edit" Click="EditPresetButton_OnClick" />
-                                                    <MenuItem Header="Clone" Click="ClonePresetButton_OnClick"/>
-                                                    <MenuItem Header="Delete" Click="RemovePresetButton_OnClick"/>
-                                                </ContextMenu>
-                                            </Button.ContextMenu>
-                                            <Button.Style>
-                                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                                    <Setter Property="Background" Value="Transparent"/>
-                                                    <Setter Property="BorderThickness" Value="0"/>
-
-                                                    <!-- #region HorribleHackForBackgroundHoverColor -->
-                                                    <Setter Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate TargetType="{x:Type ButtonBase}">
-                                                                <Grid>
-                                                                    <Border x:Name="Border"
-                                                                            Background="{TemplateBinding Background}"
-                                                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                                                            CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.CornerRadius), Mode=OneWay}"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                                    <Border x:Name="DisabledVisualElement"
-                                                                            Background="{DynamicResource ControlsDisabledBrush}"
-                                                                            CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.CornerRadius), Mode=OneWay}"
-                                                                            IsHitTestVisible="False"
-                                                                            Opacity="0"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                                    <controls:ContentControlEx
-                                                                        x:Name="PART_ContentPresenter"
-                                                                        Margin="{TemplateBinding BorderThickness}"
-                                                                        Padding="{TemplateBinding Padding}"
-                                                                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                                        Content="{TemplateBinding Content}"
-                                                                        ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.ContentCharacterCasing)}"
-                                                                        ContentStringFormat="{TemplateBinding ContentStringFormat}"
-                                                                        ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                                        ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-                                                                        RecognizesAccessKey="True"
-                                                                        SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                                </Grid>
-                                                                <ControlTemplate.Triggers>
-                                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="Border"
-                                                                            Property="Background"
-                                                                            Value="{DynamicResource GrayBrush8}" />
-                                                                        <!-- set it to what you need -->
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsPressed" Value="True">
-                                                                        <Setter TargetName="Border"
-                                                                            Property="Background"
-                                                                            Value="{DynamicResource GrayBrush7}" />
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsKeyboardFocusWithin"
-                                                                             Value="True">
-                                                                        <Setter TargetName="Border"
-                                                                            Property="BorderBrush"
-                                                                            Value="{DynamicResource ButtonMouseOverBorderBrush}" />
-                                                                        <!--
+            <ListBox.ItemContainerStyle>
+              <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                <Style.Triggers>
+                  <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="#202024"/>
+                  </Trigger>
+                </Style.Triggers>
+              </Style>
+            </ListBox.ItemContainerStyle>
+          </ListBox>
+        </DockPanel>
+        <GridSplitter Grid.Row="1" Height="4" HorizontalAlignment="Stretch" Background="Transparent"/>
+        <DockPanel Margin="0" Background="{DynamicResource CompilePal.Brushes.DockBackground}" Grid.Row="2">
+          <DockPanel DockPanel.Dock="Top" Background="{DynamicResource CompilePal.Brushes.GridBackground}" Height="40" Margin="10,4,8,0">
+            <Button x:Name="AddPresetButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 0, 5" Click="AddPresetButton_Click" ToolTip="Add Preset" DockPanel.Dock="Right">
+              <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
+            </Button>
+            <ToggleButton x:Name="FilterPresetButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 3, 5" DockPanel.Dock="Right" IsChecked="{Binding ElementName=CompileWindow, Path=PresetFilterEnabled, Mode=OneWay}" Checked="FilterPresetButton_OnChecked" Unchecked="FilterPresetButton_OnChecked">
+              <ToggleButton.Style>
+                <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                  <Style.Triggers>
+                    <Trigger Property="IsChecked" Value="False">
+                      <Setter Property="Content">
+                        <Setter.Value>
+                          <iconPacks:Material Kind="Filter" Height="10" Width="10"/>
+                        </Setter.Value>
+                      </Setter>
+                      <Setter Property="ToolTip" Value="Filter Presets"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="True">
+                      <Setter Property="Content">
+                        <Setter.Value>
+                          <iconPacks:Material Kind="FilterRemove" Height="10" Width="10"/>
+                        </Setter.Value>
+                      </Setter>
+                      <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Gray10}"/>
+                      <Setter Property="ToolTip" Value="Show All Presets"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Button.Square.Background.MouseOver}"/>
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </ToggleButton.Style>
+            </ToggleButton>
+            <TextBlock FontSize="13" Margin="0, 0, 0, 5" FontWeight="SemiBold">Preset</TextBlock>
+          </DockPanel>
+          <ListBox Name="PresetConfigListBox" SelectionChanged="PresetConfigListBox_SelectionChanged" SelectionMode="Single" ItemContainerStyle="{StaticResource GroupListBoxStyle}">
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="auto"/>
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="{Binding Name}" Margin="0, 0, 5, 0"/>
+                  <Button Name="PresetKebabButton" Grid.Column="1" Height="5" Width="15" Padding="0" Margin="0, -8, 0, -8" Visibility="Collapsed" Foreground="{DynamicResource MahApps.Brushes.Text}" ContextMenuOpening="PresetActionButton_OnContextMenuOpening" Click="PresetActionButton_OnClick" IsEnabled="{Binding ElementName=PresetConfigListBox, Path=IsEnabled}" controls:ControlsHelper.CornerRadius="0" controls:ControlsHelper.FocusBorderThickness="0">
+                    <iconPacks:PackIconMaterial Kind="DotsVertical" Height="8" Width="8"/>
+                    <Button.ContextMenu>
+                      <ContextMenu Name="PresetActionMenu" Placement="Bottom">
+                        <MenuItem Header="Edit" Click="EditPresetButton_OnClick"/>
+                        <MenuItem Header="Clone" Click="ClonePresetButton_OnClick"/>
+                        <MenuItem Header="Delete" Click="RemovePresetButton_OnClick"/>
+                      </ContextMenu>
+                    </Button.ContextMenu>
+                    <Button.Style>
+                      <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <!-- #region HorribleHackForBackgroundHoverColor -->
+                        <Setter Property="Template">
+                          <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ButtonBase}">
+                              <Grid>
+                                <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.CornerRadius), Mode=OneWay}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <Border x:Name="DisabledVisualElement" Background="{DynamicResource ControlsDisabledBrush}" CornerRadius="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.CornerRadius), Mode=OneWay}" IsHitTestVisible="False" Opacity="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                <controls:ContentControlEx x:Name="PART_ContentPresenter" Margin="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" Content="{TemplateBinding Content}" ContentCharacterCasing="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(controls:ControlsHelper.ContentCharacterCasing)}" ContentStringFormat="{TemplateBinding ContentStringFormat}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                              </Grid>
+                              <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                  <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush8}"/>
+                                  <!-- set it to what you need -->
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                  <Setter TargetName="Border" Property="Background" Value="{DynamicResource GrayBrush7}"/>
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                  <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource ButtonMouseOverBorderBrush}"/>
+                                  <!--
                                                                         <Setter TargetName="Border"
                                                                             Property="BorderThickness" Value="2" />
                                                                     -->
-                                                                    </Trigger>
-                                                                    <Trigger Property="IsEnabled" Value="False">
-                                                                        <Setter TargetName="DisabledVisualElement"
-                                                                            Property="Opacity" Value="0.7" />
-                                                                        <Setter TargetName="PART_ContentPresenter"
-                                                                            Property="Opacity" Value="0.3" />
-                                                                    </Trigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    <!-- #endregion -->
-
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsFocused" Value="True">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.4"/>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                        <Trigger Property="IsPressed" Value="True">
-                                                            <Setter Property="Background">
-                                                                <Setter.Value>
-                                                                    <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
-                                            <Setter TargetName="PresetKebabButton" Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <ListBox.GroupStyle>
-                                <GroupStyle>
-                                    <GroupStyle.HeaderTemplate>
-                                        <DataTemplate>
-                                            <TextBlock x:Name="PresetHeaderBlock" FontWeight="Bold" FontSize="12" Text="{Binding Name}" Margin="5, 2, 5, 0"/>
-                                            <DataTemplate.Triggers>
-                                                <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
-                                                    <Setter TargetName="PresetHeaderBlock" Property="Text" Value="Global"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Items.Groups.Count, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="1">
-                                                    <Setter TargetName="PresetHeaderBlock" Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </DataTemplate.Triggers>
-                                        </DataTemplate>
-                                    </GroupStyle.HeaderTemplate>
-                                </GroupStyle>
-                            </ListBox.GroupStyle>
-                        </ListBox>
-                    </DockPanel>
-                    <DockPanel Grid.Column="1" Margin="10,10,0,10" Background="{StaticResource CompilePal.Brushes.DockBackground}">
-                        <DockPanel DockPanel.Dock="Top" Background="{StaticResource CompilePal.Brushes.GridBackground}" Height="30" Margin="0, -5, 0, 0">
-                            <Button x:Name="AddProcessesButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 0, 5" Click="AddProcessButton_Click"  DockPanel.Dock="Right" ToolTip="Add Process">
-                                <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
-                            </Button>
-                            <Button x:Name="RemoveProcessesButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 3, 5" Click="RemoveProcessButton_Click" DockPanel.Dock="Right" ToolTip="Remove Process">
-                                <iconPacks:Material Kind="Minus" Height="10" Width="10"/>
-                            </Button>
-                            <TextBlock FontSize="16" Margin="0, 0, 0, 5" FontWeight="SemiBold">Process</TextBlock>
-                        </DockPanel>
-                        <ListBox x:Name ="CompileProcessesListBox" Grid.Row="0" SelectionChanged="CompileProcessesListBox_SelectionChanged">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <DockPanel Name="ProcessDockPanel"  HorizontalAlignment="Stretch">
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding}" Margin="0, 0, 5, 0"/>
-                                        <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="Alert" Foreground="Orange" Margin="0, 0, 5, 0" ToolTip="This process is potentially incompatible with the current game">
-                                            <iconPacks:PackIconMaterial.Style>
-                                                <Style TargetType="iconPacks:PackIconMaterial">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding IsCompatible}" Value="False">
-                                                            <Setter Property="Visibility" Value="Visible"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </iconPacks:PackIconMaterial.Style>
-                                        </iconPacks:PackIconMaterial>
-                                        <CheckBox x:Name="ProcessCheckbox"  IsChecked="{Binding DoRun, Mode=TwoWay}" HorizontalAlignment="Right" Click="DoRun_OnClick" controls:CheckBoxHelper.CheckBackgroundFillUncheckedDisabled="LightGray" ToolTipService.ShowOnDisabled="True"/>
-                                    </DockPanel>
-                                    <DataTemplate.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=SelectedItem.IsBSP, ElementName=MapListBox}" Value="True"/>
-                                                <Condition Binding="{Binding SupportsBSP}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter TargetName="ProcessCheckbox" Property="IsChecked" Value="False"/>
-                                                <Setter TargetName="ProcessCheckbox" Property="ToolTip" Value="This process does not support BSP files"/>
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                                    <Style.Triggers>
-                                        <MultiDataTrigger>
-                                            <MultiDataTrigger.Conditions>
-                                                <Condition Binding="{Binding Path=SelectedItem.IsBSP, ElementName=MapListBox}" Value="True"/>
-                                                <Condition Binding="{Binding SupportsBSP}" Value="False"/>
-                                            </MultiDataTrigger.Conditions>
-                                            <MultiDataTrigger.Setters>
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                            </MultiDataTrigger.Setters>
-                                        </MultiDataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                        </ListBox>
-                    </DockPanel>
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35px"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <DockPanel Background="{StaticResource CompilePal.Brushes.GridBackground}" Height="25" Margin="10, 0, 10, 0">
-                            <TextBlock TextAlignment="Right" FontSize="16" Margin="0, 0, 0, 0" FontWeight="SemiBold" DockPanel.Dock="Left">Parameters</TextBlock>
-                            <Button Name="AddParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="25" Padding="0" Margin="0, 0, 3, 0" Click="AddParameterButton_Click" ToolTip="Add Parameter">
-                                <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
-                            </Button>
-                            <Button Name="RemoveParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="25" Padding="0" Margin="0, 0, 3, 0" Click="RemoveParameterButton_OnClickParameterButton_Click" ToolTip="Remove Parameter">
-                                <iconPacks:Material Kind="Minus" Height="10" Width="10"/>
-                            </Button>
-                            <Button Name="AddCustomParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="25" Padding="0" Margin="0, 0, 3, 0" Click="AddCustomParameterButton_Click" ToolTip="Add Custom Parameter" IsEnabled="{Binding AddCustomParameterButtonEnabled, ElementName=CompileWindow, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
-                                <iconPacks:Material Kind="PlaylistPlus" Height="10" Width="10"/>
-                            </Button>
-                            <TextBox Name="ParametersTextBox" Margin="20,0, 20,0" IsEnabled="True" IsReadOnly="True" Background="{StaticResource MahApps.Brushes.Gray.SemiTransparent}" FontWeight="DemiBold" BorderThickness="0"/>
-                        </DockPanel>
-                        <DataGrid Grid.Row ="1" Name="ConfigDataGrid" Margin="10,0,10,10" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="Name" IsReadOnly="True">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}" Margin="5, 0, 5, 0"/>
-                                                <iconPacks:PackIconMaterial Kind="Alert" Foreground="{StaticResource CompilePal.Brushes.Warning}" Margin="0, 0, 5, 0" ToolTip="This parameter is potentially incompatible with the current game">
-                                                    <iconPacks:PackIconMaterial.Style>
-                                                        <Style TargetType="iconPacks:PackIconMaterial">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsCompatible}" Value="False">
-                                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </iconPacks:PackIconMaterial.Style>
-                                                </iconPacks:PackIconMaterial>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTemplateColumn Header="Value">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <Grid>
-                                                <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnConfigChanged">
-                                                    <TextBox.Style>
-                                                        <Style TargetType="{x:Type TextBox}">
-                                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding ValueIsFile}" Value="True">
-                                                                    <Setter Property="Visibility" Value="Hidden"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding ValueIsFolder}" Value="True">
-                                                                    <Setter Property="Visibility" Value="Hidden"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBox.Style>
-                                                </TextBox>
-                                                <local:FileInput Config="{Binding}" FileDialogTitle="Choose File" IsFolder="{Binding ValueIsFolder}">
-                                                    <local:FileInput.Style>
-                                                        <Style TargetType="{x:Type local:FileInput}">
-                                                            <Style.Triggers>
-                                                                <MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        <Condition Binding="{Binding ValueIsFile}" Value="False"/>
-                                                                        <Condition Binding="{Binding ValueIsFolder}" Value="False"/>
-                                                                    </MultiDataTrigger.Conditions>
-                                                                    <MultiDataTrigger.Setters>
-                                                                        <Setter Property="Visibility" Value="Hidden"/>
-                                                                    </MultiDataTrigger.Setters>
-                                                                </MultiDataTrigger>
-                                                                <DataTrigger Binding="{Binding ValueIsFolder}" Value="True">
-                                                                    <Setter Property="Hint" Value="Choose Folder"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </local:FileInput.Style>
-                                                </local:FileInput>
-                                                <Grid.Style>
-                                                    <Style TargetType="{x:Type Grid}">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding CanHaveValue}" Value="False">
-                                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Grid.Style>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                                <DataGridTextColumn Header="Description" Binding="{ Binding Description}" IsReadOnly="True"/>
-                                <DataGridTextColumn Header="Warnings" Binding="{ Binding Warning}" IsReadOnly="True"/>
-                            </DataGrid.Columns>
-                        </DataGrid>
-
-                        <controls:MetroTabControl Grid.Row="1" Visibility="Hidden" controls:TabControlHelper.Underlined="SelectedTabItem" Name="ProcessTab" IsEnabled="False" SelectionChanged="ProcessTab_OnSelectionChanged" Background="Transparent">
-                            <controls:MetroTabItem Header="PROGRAMS" Margin="5, 0, 0, 0" x:Name="ProgramTab" Background="Transparent">
-                                <DataGrid IsEnabled="False" Visibility="Visible" Name="ProcessDataGrid" Margin="10,10,10,10" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
-                                    <DataGrid.Columns>
-                                        <DataGridTemplateColumn Header="Program Path" CanUserSort="False">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <local:FileInput Config="{Binding}" FileDialogTitle="Choose Program"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-
-                                        <DataGridTemplateColumn Header="Command Line Arguments" CanUserSort="False" Width="*">
-                                            <DataGridTemplateColumn.CellTemplate>
-                                                <DataTemplate>
-                                                    <TextBox Text="{Binding Value2, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnConfigChanged"/>
-                                                </DataTemplate>
-                                            </DataGridTemplateColumn.CellTemplate>
-                                        </DataGridTemplateColumn>
-
-                                        <DataGridCheckBoxColumn Header="Read Output" Binding="{Binding ReadOutput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MetroDataGridCheckBox}" EditingElementStyle="{DynamicResource MetroDataGridCheckBox}" CanUserSort="False"/>
-
-                                        <DataGridCheckBoxColumn Header="Wait For Exit" Binding="{Binding WaitForExit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MetroDataGridCheckBox}" EditingElementStyle="{DynamicResource MetroDataGridCheckBox}" CanUserSort="False"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
-                            </controls:MetroTabItem>
-
-                            <controls:MetroTabItem Header="ORDER" Margin="5, 0, 0, 0" IsEnabledChanged="OrderGrid_OnIsEnabledChanged" x:Name="OrderTab" Background="Transparent">
-                                <DataGrid Name="OrderGrid" Margin="10,10,10,10" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" ItemsSource="{Binding Source={x:Static config:OrderManager.CurrentOrder}}" local:RowDragHelper.EnableRowDrag="True">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="Original Order" Binding="{ Binding Ordering}" IsReadOnly="True" CanUserSort="False"/>
-                                        <DataGridTextColumn Header="Name" Binding="{ Binding Name}" IsReadOnly="True" Width="*" CanUserSort="False"/>
-                                        <DataGridTextColumn Header="Description" Binding="{ Binding Description}" IsReadOnly="True" Width="*" CanUserSort="False"/>
-                                    </DataGrid.Columns>
-                                    <DataGrid.CellStyle>
-                                        <Style TargetType="DataGridCell">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsDraggable}" Value="False">
-                                                    <Setter Property="Background" Value="{StaticResource CompilePal.Brushes.GridBackground}"/>
-                                                    <Setter Property="BorderThickness" Value="0"/>
-                                                    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                                    <Setter Property="Foreground" Value="Black"/>
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding IsDraggable}" Value="True">
-                                                    <Setter Property="BorderThickness" Value="0"/>
-                                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGrid.CellStyle>
-                                    <DataGrid.RowStyle>
-                                        <Style TargetType="DataGridRow">
-                                            <Style.Setters>
-                                                <EventSetter Event="MouseEnter" Handler="DataGridCell_OnEnter"/>
-                                                <EventSetter Event="MouseLeave" Handler="DataGridCell_OnExit"/>
-                                            </Style.Setters>
-                                        </Style>
-                                    </DataGrid.RowStyle>
-                                    <DataGrid.Resources>
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
-                                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
-                                    </DataGrid.Resources>
-                                </DataGrid>
-                            </controls:MetroTabItem>
-                        </controls:MetroTabControl>
-                    </Grid>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                  <Setter TargetName="DisabledVisualElement" Property="Opacity" Value="0.7"/>
+                                  <Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="0.3"/>
+                                </Trigger>
+                              </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                          </Setter.Value>
+                        </Setter>
+                        <!-- #endregion -->
+                        <Style.Triggers>
+                          <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Background">
+                              <Setter.Value>
+                                <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
+                              </Setter.Value>
+                            </Setter>
+                          </Trigger>
+                          <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background">
+                              <Setter.Value>
+                                <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.4"/>
+                              </Setter.Value>
+                            </Setter>
+                          </Trigger>
+                          <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter Property="Background">
+                              <Setter.Value>
+                                <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
+                              </Setter.Value>
+                            </Setter>
+                          </Trigger>
+                          <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background">
+                              <Setter.Value>
+                                <SolidColorBrush Color="{StaticResource MahApps.Colors.Gray10}" Opacity="0.25"/>
+                              </Setter.Value>
+                            </Setter>
+                          </Trigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Button.Style>
+                  </Button>
                 </Grid>
-            </controls:MetroTabItem>
-            <controls:MetroTabItem Name="OutputTab" Header="OUTPUT">
-                <Grid Background="{StaticResource CompilePal.Brushes.GridBackground}">
-                    <RichTextBox IsReadOnly="True" x:Name="CompileOutputTextbox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" BorderThickness="0" Margin="10,10,10,10" FontFamily="Cascadia Code PL, Segoe UI, Lucida Sans Unicode, Verdana" Typography.StandardLigatures="True" IsReadOnlyCaretVisible="True" Block.LineHeight="2" IsDocumentEnabled="True">
-                        <RichTextBox.Document>
-                            <FlowDocument>
-                                <Paragraph Name="OutputParagraph"/>
-                            </FlowDocument>
-                        </RichTextBox.Document>
-                    </RichTextBox>
-                </Grid>
-
-            </controls:MetroTabItem>
-        </controls:MetroTabControl>
-        <StackPanel Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Orientation="Horizontal" Margin="10,0,10,0">
-            <ProgressBar Name="CompileProgressBar" Margin="0,0,0,7" Height="27" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="200"/>
-            <Button Name="CopyButton" Margin="5,10,0,6" Width="35" Click="CopyButton_OnClick" ToolTip="Copy Output">
-                <iconPacks:Material Height="15" Kind="ContentCopy" />
-            </Button>
-            <Button Name="CompileStartStopButton" Content="Compile" Margin="5,10,0,6" Width="75" Click="CompileStartStopButton_OnClick" IsEnabled="{Binding ElementName=MapListBox, Path=Items.Count}"/>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" Value="True">
+                    <Setter TargetName="PresetKebabButton" Property="Visibility" Value="Visible"/>
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.GroupStyle>
+              <GroupStyle>
+                <GroupStyle.HeaderTemplate>
+                  <DataTemplate>
+                    <TextBlock x:Name="PresetHeaderBlock" FontWeight="Bold" FontSize="12" Text="{Binding Name}" Margin="5, 2, 5, 0"/>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
+                        <Setter TargetName="PresetHeaderBlock" Property="Text" Value="Global"/>
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding Items.Groups.Count, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}" Value="1">
+                        <Setter TargetName="PresetHeaderBlock" Property="Visibility" Value="Collapsed"/>
+                      </DataTrigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </GroupStyle.HeaderTemplate>
+              </GroupStyle>
+            </ListBox.GroupStyle>
+          </ListBox>
+        </DockPanel>
+      </Grid>
+      <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Transparent"/>
+      <Grid Grid.Column="2">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="58"/>
+          <RowDefinition Height="*" MinHeight="170"/>
+          <RowDefinition Height="10"/>
+          <RowDefinition x:Name="OutputRow" Height="210" MinHeight="110"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+          <TextBlock Text="{Binding SelectedItem.FullMapName, ElementName=MapListBox, TargetNullValue=Select a map}" FontSize="20" FontWeight="SemiBold"/>
+          <TextBlock Text="{Binding SelectedItem.File, ElementName=MapListBox}" FontSize="11" Opacity="0.65" TextTrimming="CharacterEllipsis" ToolTip="{Binding SelectedItem.File, ElementName=MapListBox}"/>
         </StackPanel>
-        <Label Name="UpdateLabel" Visibility="Collapsed"  Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10" MouseLeftButtonUp="UpdateLabel_MouseLeftButtonUp" >
-            <Hyperlink Name="UpdateHyperLink" NavigateUri="https://github.com/riggs9162/CompilePal/releases/latest" RequestNavigate="UpdateHyperLink_OnRequestNavigate" Foreground="{StaticResource CompilePal.Brushes.Link}"/>
-        </Label>
-        <Label Name="TimeElapsedLabel" Visibility="Collapsed" Grid.Row="2" VerticalAlignment="Bottom" FontWeight="Bold" HorizontalAlignment="Left" Margin="10" />
+        <Grid x:Name="Editor" Grid.Row="1">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="185" MinWidth="155"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*" MinWidth="350"/>
+          </Grid.ColumnDefinitions>
+          <GridSplitter Grid.Column="1" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="Transparent"/>
+          <DockPanel Grid.Column="0" Margin="0" Background="{DynamicResource CompilePal.Brushes.DockBackground}">
+            <DockPanel DockPanel.Dock="Top" Background="{DynamicResource CompilePal.Brushes.GridBackground}" Height="40" Margin="10,4,8,0">
+              <Button x:Name="AddProcessesButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 0, 5" Click="AddProcessButton_Click" DockPanel.Dock="Right" ToolTip="Add Process">
+                <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
+              </Button>
+              <Button x:Name="RemoveProcessesButton" MinHeight="25" Height="25" Width="25" Padding="0" Margin="0, 0, 3, 5" Click="RemoveProcessButton_Click" DockPanel.Dock="Right" ToolTip="Remove Process">
+                <iconPacks:Material Kind="Minus" Height="10" Width="10"/>
+              </Button>
+              <TextBlock FontSize="13" Margin="0, 0, 0, 5" FontWeight="SemiBold">Compile stages</TextBlock>
+            </DockPanel>
+            <ListBox x:Name="CompileProcessesListBox" Grid.Row="0" SelectionChanged="CompileProcessesListBox_SelectionChanged">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel Name="ProcessDockPanel" HorizontalAlignment="Stretch">
+                    <iconPacks:PackIconMaterial Width="16" Height="16" Margin="0,0,9,0" VerticalAlignment="Center">
+                      <iconPacks:PackIconMaterial.Style>
+                        <Style TargetType="iconPacks:PackIconMaterial">
+                          <Setter Property="Kind" Value="Cog"/>
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding Name}" Value="VBSP">
+                              <Setter Property="Kind" Value="CubeOutline"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="VVIS">
+                              <Setter Property="Kind" Value="EyeOutline"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="VRAD">
+                              <Setter Property="Kind" Value="LightbulbOutline"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="PACK">
+                              <Setter Property="Kind" Value="PackageVariant"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="COPY">
+                              <Setter Property="Kind" Value="ContentCopy"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="CUBEMAPS">
+                              <Setter Property="Kind" Value="CubeScan"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="REPACK">
+                              <Setter Property="Kind" Value="Archive"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </iconPacks:PackIconMaterial.Style>
+                    </iconPacks:PackIconMaterial>
+                    <StackPanel MaxWidth="115">
+                      <TextBlock VerticalAlignment="Center" Text="{Binding}" Margin="0, 0, 5, 0"/>
+                      <TextBlock Text="{Binding WorkspaceStatus}" FontSize="10" Opacity="0.7" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                    <iconPacks:PackIconMaterial VerticalAlignment="Center" Kind="Alert" Foreground="Orange" Margin="0, 0, 5, 0" ToolTip="This process is potentially incompatible with the current game">
+                      <iconPacks:PackIconMaterial.Style>
+                        <Style TargetType="iconPacks:PackIconMaterial">
+                          <Setter Property="Visibility" Value="Collapsed"/>
+                          <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCompatible}" Value="False">
+                              <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                          </Style.Triggers>
+                        </Style>
+                      </iconPacks:PackIconMaterial.Style>
+                    </iconPacks:PackIconMaterial>
+                    <CheckBox x:Name="ProcessCheckbox" IsChecked="{Binding DoRun, Mode=TwoWay}" HorizontalAlignment="Right" Click="DoRun_OnClick" controls:CheckBoxHelper.CheckBackgroundFillUncheckedDisabled="LightGray" ToolTipService.ShowOnDisabled="True"/>
+                  </DockPanel>
+                  <DataTemplate.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=SelectedItem.IsBSP, ElementName=MapListBox}" Value="True"/>
+                        <Condition Binding="{Binding SupportsBSP}" Value="False"/>
+                      </MultiDataTrigger.Conditions>
+                      <MultiDataTrigger.Setters>
+                        <Setter TargetName="ProcessCheckbox" Property="IsChecked" Value="False"/>
+                        <Setter TargetName="ProcessCheckbox" Property="ToolTip" Value="This process does not support BSP files"/>
+                      </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                  </DataTemplate.Triggers>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+              <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=SelectedItem.IsBSP, ElementName=MapListBox}" Value="True"/>
+                        <Condition Binding="{Binding SupportsBSP}" Value="False"/>
+                      </MultiDataTrigger.Conditions>
+                      <MultiDataTrigger.Setters>
+                        <Setter Property="IsEnabled" Value="False"/>
+                      </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <Trigger Property="IsSelected" Value="True">
+                      <Setter Property="Foreground" Value="#202024"/>
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </ListBox.ItemContainerStyle>
+            </ListBox>
+          </DockPanel>
+          <Grid Grid.Column="2" Background="{DynamicResource CompilePal.Brushes.DockBackground}">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="42"/>
+              <RowDefinition Height="36"/>
+              <RowDefinition/>
+              <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <DockPanel Background="{DynamicResource CompilePal.Brushes.GridBackground}" Height="30" Margin="10,8,10,4" LastChildFill="False">
+              <TextBlock TextAlignment="Right" FontSize="13" Margin="0, 0, 0, 0" FontWeight="SemiBold" DockPanel.Dock="Left">Parameters</TextBlock>
+              <Button Name="AddParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="25" Padding="0" Margin="0, 0, 3, 0" Click="AddParameterButton_Click" ToolTip="Add Parameter">
+                <iconPacks:Material Kind="Plus" Height="10" Width="10"/>
+              </Button>
+              <Button Name="RemoveParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="25" Padding="0" Margin="0, 0, 3, 0" Click="RemoveParameterButton_OnClickParameterButton_Click" ToolTip="Remove Parameter">
+                <iconPacks:Material Kind="Minus" Height="10" Width="10"/>
+              </Button>
+              <Button Name="AddCustomParameterButton" DockPanel.Dock="Right" MinHeight="25" Width="Auto" Padding="8,0" Margin="0, 0, 3, 0" Click="AddCustomParameterButton_Click" ToolTip="Add an advanced command-line argument" IsEnabled="{Binding AddCustomParameterButtonEnabled, ElementName=CompileWindow, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Content="Custom argument">
+                                </Button>
+            </DockPanel>
+            <DataGrid Grid.Row="2" Name="ConfigDataGrid" Margin="10,0,10,10" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
+              <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Name" IsReadOnly="True">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" Margin="5, 0, 5, 0"/>
+                        <iconPacks:PackIconMaterial Kind="Alert" Foreground="{DynamicResource CompilePal.Brushes.Warning}" Margin="0, 0, 5, 0" ToolTip="This parameter is potentially incompatible with the current game">
+                          <iconPacks:PackIconMaterial.Style>
+                            <Style TargetType="iconPacks:PackIconMaterial">
+                              <Setter Property="Visibility" Value="Collapsed"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCompatible}" Value="False">
+                                  <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </iconPacks:PackIconMaterial.Style>
+                        </iconPacks:PackIconMaterial>
+                      </StackPanel>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Value">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate>
+                      <Grid>
+                        <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnConfigChanged">
+                          <TextBox.Style>
+                            <Style TargetType="{x:Type TextBox}">
+                              <Setter Property="VerticalContentAlignment" Value="Center"/>
+                              <Style.Triggers>
+                                <DataTrigger Binding="{Binding ValueIsFile}" Value="True">
+                                  <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ValueIsFolder}" Value="True">
+                                  <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                        <local:FileInput Config="{Binding}" FileDialogTitle="Choose File" IsFolder="{Binding ValueIsFolder}">
+                          <local:FileInput.Style>
+                            <Style TargetType="{x:Type local:FileInput}">
+                              <Style.Triggers>
+                                <MultiDataTrigger>
+                                  <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ValueIsFile}" Value="False"/>
+                                    <Condition Binding="{Binding ValueIsFolder}" Value="False"/>
+                                  </MultiDataTrigger.Conditions>
+                                  <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                  </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <DataTrigger Binding="{Binding ValueIsFolder}" Value="True">
+                                  <Setter Property="Hint" Value="Choose Folder"/>
+                                </DataTrigger>
+                              </Style.Triggers>
+                            </Style>
+                          </local:FileInput.Style>
+                        </local:FileInput>
+                        <Grid.Style>
+                          <Style TargetType="{x:Type Grid}">
+                            <Style.Triggers>
+                              <DataTrigger Binding="{Binding CanHaveValue}" Value="False">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                              </DataTrigger>
+                            </Style.Triggers>
+                          </Style>
+                        </Grid.Style>
+                      </Grid>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Description" Binding="{ Binding Description}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Warnings" Binding="{ Binding Warning}" IsReadOnly="True"/>
+              </DataGrid.Columns>
+            </DataGrid>
+            <controls:MetroTabControl Grid.Row="2" Visibility="Hidden" controls:TabControlHelper.Underlined="SelectedTabItem" Name="ProcessTab" IsEnabled="False" SelectionChanged="ProcessTab_OnSelectionChanged" Background="Transparent">
+              <controls:MetroTabItem Header="PROGRAMS" Margin="5, 0, 0, 0" x:Name="ProgramTab" Background="Transparent">
+                <DataGrid IsEnabled="False" Visibility="Visible" Name="ProcessDataGrid" Margin="10,10,10,10" AutoGenerateColumns="False" CanUserAddRows="False" ItemsSource="{Binding}">
+                  <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Program Path" CanUserSort="False">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <local:FileInput Config="{Binding}" FileDialogTitle="Choose Program"/>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Command Line Arguments" CanUserSort="False" Width="*">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <TextBox Text="{Binding Value2, UpdateSourceTrigger=PropertyChanged}" KeyUp="OnConfigChanged"/>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridCheckBoxColumn Header="Read Output" Binding="{Binding ReadOutput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MetroDataGridCheckBox}" EditingElementStyle="{DynamicResource MetroDataGridCheckBox}" CanUserSort="False"/>
+                    <DataGridCheckBoxColumn Header="Wait For Exit" Binding="{Binding WaitForExit, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MetroDataGridCheckBox}" EditingElementStyle="{DynamicResource MetroDataGridCheckBox}" CanUserSort="False"/>
+                  </DataGrid.Columns>
+                </DataGrid>
+              </controls:MetroTabItem>
+              <controls:MetroTabItem Header="ORDER" Margin="5, 0, 0, 0" IsEnabledChanged="OrderGrid_OnIsEnabledChanged" x:Name="OrderTab" Background="Transparent">
+                <DataGrid Name="OrderGrid" Margin="10,10,10,10" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single" ItemsSource="{Binding Source={x:Static config:OrderManager.CurrentOrder}}" local:RowDragHelper.EnableRowDrag="True">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Original Order" Binding="{ Binding Ordering}" IsReadOnly="True" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Name" Binding="{ Binding Name}" IsReadOnly="True" Width="*" CanUserSort="False"/>
+                    <DataGridTextColumn Header="Description" Binding="{ Binding Description}" IsReadOnly="True" Width="*" CanUserSort="False"/>
+                  </DataGrid.Columns>
+                  <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsDraggable}" Value="False">
+                          <Setter Property="Background" Value="{DynamicResource CompilePal.Brushes.GridBackground}"/>
+                          <Setter Property="BorderThickness" Value="0"/>
+                          <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                          <Setter Property="Foreground" Value="{DynamicResource MahApps.Brushes.Text}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsDraggable}" Value="True">
+                          <Setter Property="BorderThickness" Value="0"/>
+                          <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </DataGrid.CellStyle>
+                  <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                      <Style.Setters>
+                        <EventSetter Event="MouseEnter" Handler="DataGridCell_OnEnter"/>
+                        <EventSetter Event="MouseLeave" Handler="DataGridCell_OnExit"/>
+                      </Style.Setters>
+                    </Style>
+                  </DataGrid.RowStyle>
+                  <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{x:Static SystemColors.HighlightTextColor}"/>
+                  </DataGrid.Resources>
+                </DataGrid>
+              </controls:MetroTabItem>
+            </controls:MetroTabControl>
+            <DockPanel Grid.Row="3" Margin="10,6,10,10">
+              <Button DockPanel.Dock="Right" Content="Copy" Click="CopyCommand_Click" Margin="6,0,0,0" ToolTip="Copy selected stage arguments"/>
+              <TextBox Name="ParametersTextBox" IsReadOnly="True" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" MaxHeight="70" VerticalScrollBarVisibility="Auto" ToolTip="Selected stage arguments; map and game paths are expanded at compile time"/>
+            </DockPanel>
+            <TextBox x:Name="ParameterSearch" Grid.Row="1" Margin="10,0,10,6" controls:TextBoxHelper.Watermark="Search selected stage parameters (Ctrl+K)" TextChanged="ParameterSearch_Changed" AutomationProperties.Name="Search parameters"/>
+            <DockPanel Grid.Row="2" Margin="10,0,10,0" x:Name="CatalogPanel">
+              <TextBlock x:Name="OptionSummary" DockPanel.Dock="Top" Margin="0,0,0,6" FontSize="11" Opacity="0.65" Text="Select a stage to see its available options"/>
+              <ListBox x:Name="OptionCatalog" BorderThickness="0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                <ListBox.ItemTemplate>
+                  <DataTemplate>
+                    <Border Padding="{DynamicResource Workspace.OptionPadding}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource MahApps.Brushes.Gray8}">
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="28"/>
+                          <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox IsChecked="{Binding Enabled, Mode=TwoWay}" VerticalAlignment="Top" Margin="0,3,0,0" IsEnabled="{Binding CanToggle}" AutomationProperties.Name="{Binding Name}"/>
+                        <StackPanel Grid.Column="1">
+                          <DockPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding Argument}" FontFamily="Consolas" FontSize="11" Opacity="0.6" Margin="10,1,0,0"/>
+                          </DockPanel>
+                          <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Opacity="0.8" Margin="0,3,0,0"/>
+                          <TextBlock Text="{Binding Warning}" TextWrapping="Wrap" FontSize="11" Opacity="0.65" Margin="0,2,0,0"/>
+                          <TextBlock Text="Check compatibility with your selected game." Foreground="{DynamicResource CompilePal.Brushes.Warning}" FontSize="11">
+                            <TextBlock.Style>
+                              <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding IsCompatible}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </TextBlock.Style>
+                          </TextBlock>
+                          <Grid Margin="0,6,0,0" IsEnabled="{Binding Enabled}">
+                            <Grid.Style>
+                              <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                  <DataTrigger Binding="{Binding CanHaveValue}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                  </DataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </Grid.Style>
+                            <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" controls:TextBoxHelper.Watermark="Enter a value" AutomationProperties.Name="{Binding Name}">
+                              <TextBox.Style>
+                                <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Input.ValueIsFile}" Value="True">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Input.ValueIsFolder}" Value="True">
+                                      <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBox.Style>
+                            </TextBox>
+                            <local:FileInput Config="{Binding Input}" IsFolder="{Binding Input.ValueIsFolder}" FileDialogTitle="Choose option path">
+                              <local:FileInput.Style>
+                                <Style TargetType="local:FileInput">
+                                  <Setter Property="Visibility" Value="Collapsed"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Input.ValueIsFile}" Value="True">
+                                      <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Input.ValueIsFolder}" Value="True">
+                                      <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </local:FileInput.Style>
+                            </local:FileInput>
+                          </Grid>
+                          <Button Content="Add another value" Click="RepeatOption_Click" HorizontalAlignment="Left" Margin="0,6,0,0">
+                            <Button.Style>
+                              <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                  <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                      <Condition Binding="{Binding Repeatable}" Value="True"/>
+                                      <Condition Binding="{Binding Enabled}" Value="True"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                  </MultiDataTrigger>
+                                </Style.Triggers>
+                              </Style>
+                            </Button.Style>
+                          </Button>
+                        </StackPanel>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                          <ContentPresenter/>
+                          </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </ListBox.ItemContainerStyle>
+              </ListBox>
+            </DockPanel>
+          </Grid>
+        </Grid>
+        <GridSplitter Grid.Row="2" Height="4" HorizontalAlignment="Stretch" Background="Transparent"/>
+        <Grid x:Name="OutputPanel" Grid.Row="3" Background="{DynamicResource CompilePal.Brushes.DockBackground}">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="44"/>
+            <RowDefinition Height="*"/>
+          </Grid.RowDefinitions>
+          <DockPanel Margin="10,6" LastChildFill="False">
+            <TextBlock Text="Compile output" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <Button DockPanel.Dock="Right" Content="Copy log" Click="CopyButton_OnClick" Margin="8,0,0,0"/>
+            <CheckBox x:Name="IssuesOnly" DockPanel.Dock="Right" Content="Warnings / errors" Checked="LogFilter_Changed" Unchecked="LogFilter_Changed" VerticalAlignment="Center" Margin="8,0"/>
+            <TextBox x:Name="LogSearch" DockPanel.Dock="Right" Width="155" controls:TextBoxHelper.Watermark="Search output" TextChanged="LogSearch_Changed" AutomationProperties.Name="Search output"/>
+          </DockPanel>
+          <TextBox x:Name="FilteredOutput" Grid.Row="1" Visibility="Collapsed" IsReadOnly="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="12" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" BorderThickness="0" Margin="10,0,10,8"/>
+          <RichTextBox IsReadOnly="True" x:Name="CompileOutputTextbox" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" BorderThickness="0" Margin="10,0,10,8" FontFamily="Consolas" Typography.StandardLigatures="True" IsReadOnlyCaretVisible="True" Block.LineHeight="2" IsDocumentEnabled="True" Grid.Row="1" FontSize="12">
+            <RichTextBox.Document>
+              <FlowDocument>
+                <Paragraph Name="OutputParagraph"/>
+              </FlowDocument>
+            </RichTextBox.Document>
+          </RichTextBox>
+        </Grid>
+      </Grid>
     </Grid>
-
-    <Window.TaskbarItemInfo>
-        <TaskbarItemInfo/>
-    </Window.TaskbarItemInfo>
+    <Grid Grid.Row="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <StackPanel VerticalAlignment="Center">
+        <TextBlock x:Name="CompileStatusText" Text="Ready to compile" FontWeight="SemiBold"/>
+        <TextBlock x:Name="QueueSummary" FontSize="11" Opacity="0.7"/>
+      </StackPanel>
+      <StackPanel x:Name="FooterActions" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+        <Button x:Name="CheckToolsButton" Click="CheckTools_Click" Margin="0,0,12,0">
+          <StackPanel Orientation="Horizontal">
+            <iconPacks:PackIconMaterial Kind="CheckCircleOutline" Width="14" Height="14" Margin="0,0,6,0" VerticalAlignment="Center"/>
+            <TextBlock Text="Check tools"/>
+          </StackPanel>
+        </Button>
+        <ProgressBar Name="CompileProgressBar" Height="5" Width="110" Margin="0,0,10,0" VerticalAlignment="Center"/>
+        <Button Name="CompileStartStopButton" Content="Compile" Width="110" Click="CompileStartStopButton_OnClick" IsEnabled="{Binding ElementName=MapListBox, Path=Items.Count}" Margin="0,0,10,0" VerticalAlignment="Center"><Button.ContentTemplate><DataTemplate><StackPanel Orientation="Horizontal"><iconPacks:PackIconMaterial Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,6,0"><iconPacks:PackIconMaterial.Style><Style TargetType="iconPacks:PackIconMaterial"><Setter Property="Kind" Value="Play"/><Style.Triggers><DataTrigger Binding="{Binding}" Value="Cancel"><Setter Property="Kind" Value="Stop"/></DataTrigger></Style.Triggers></Style></iconPacks:PackIconMaterial.Style></iconPacks:PackIconMaterial><TextBlock Text="{Binding}"/></StackPanel></DataTemplate></Button.ContentTemplate></Button>
+        <Label Name="TimeElapsedLabel" Visibility="Collapsed" FontWeight="Bold" Margin="0,0,10,0" VerticalAlignment="Center"/>
+        <Label Name="UpdateLabel" Visibility="Collapsed" MouseLeftButtonUp="UpdateLabel_MouseLeftButtonUp" Margin="0,0,10,0" VerticalAlignment="Center" MaxWidth="150" FontSize="10">
+          <Hyperlink Name="UpdateHyperLink" NavigateUri="https://github.com/riggs9162/CompilePal/releases/latest" RequestNavigate="UpdateHyperLink_OnRequestNavigate" Foreground="{DynamicResource CompilePal.Brushes.Link}"/>
+        </Label>
+      </StackPanel>
+    </Grid>
+  </Grid>
 </controls:MetroWindow>
-        
-
-        

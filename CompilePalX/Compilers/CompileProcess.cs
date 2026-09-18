@@ -18,8 +18,15 @@ using Newtonsoft.Json;
 
 namespace CompilePalX
 {
-    class CompileProcess
+    class CompileProcess : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private string workspaceStatus = "";
+        public string WorkspaceStatus
+        {
+            get => workspaceStatus;
+            set { workspaceStatus = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(WorkspaceStatus))); }
+        }
         public string ParameterFolder = "./Parameters";
 	    public bool Draggable = true; // set to false if we ever want to disable reordering non custom compile steps
         public List<Error> CompileErrors;
@@ -173,7 +180,7 @@ namespace CompilePalX
                         }
                         else
                             // protect filepaths in quotes, since they can contain -
-                        if (parameter.ValueIsFile || parameter.Value2IsFile)
+                        if (parameter.ValueIsFile || parameter.Value2IsFile || parameter.ValueIsFolder || parameter.Value2IsFolder)
                             parameters += $" \"{parameter.Value}\"";
                         else
                             parameters += " " + parameter.Value;

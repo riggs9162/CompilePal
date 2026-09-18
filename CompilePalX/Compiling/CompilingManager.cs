@@ -103,6 +103,8 @@ namespace CompilePalX
         public static event CompileCleared OnClear;
         public static event CompileFinished OnStart;
         public static event CompileFinished OnFinish;
+        public static event Action<CompileProcess, string>? StageChanged;
+        public static event Action<string>? OutcomeChanged;
 
         public static TrulyObservableCollection<Map> MapFiles = [];
 
@@ -181,7 +183,24 @@ namespace CompilePalX
 					{
                         cancellationToken.ThrowIfCancellationRequested();
                         currentCompileProcess = compileProcess;
-                        compileProcess.Run(buildContext, cancellationToken);
+                        StageChanged?.Invoke(compileProcess, $"Running · {cleanMapName}");
+                        var stageTime = Stopwatch.StartNew();
+                        try
+                        {
+                            compileProcess.Run(buildContext, cancellationToken);
+                            cancellationToken.ThrowIfCancellationRequested();
+                            StageChanged?.Invoke(compileProcess, $"Finished in {stageTime.Elapsed:hh\\:mm\\:ss}");
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            StageChanged?.Invoke(compileProcess, compileProcess.CompileErrors?.Any(error => error.Severity == 5) == true ? "Failed" : "Stopped");
+                            throw;
+                        }
+                        catch
+                        {
+                            StageChanged?.Invoke(compileProcess, "Failed");
+                            throw;
+                        }
                         cancellationToken.ThrowIfCancellationRequested();
 
                         compileErrors.AddRange(currentCompileProcess.CompileErrors);
@@ -216,6 +235,7 @@ namespace CompilePalX
                         cancellationToken.ThrowIfCancellationRequested();
                         postCompile(mapErrors);
                         completed = true;
+                        OutcomeChanged?.Invoke(mapErrors.Any(map => map.Errors.Count > 0) ? "Finished with warnings or errors. Review output." : "Compile finished");
                     });
             }
             catch (OperationCanceledException) { }
@@ -233,6 +253,7 @@ namespace CompilePalX
                         CompilePalLogger.LogLine("Compile stopped before completion.");
                         FinishCompile();
                         ProgressManager.ErrorProgress();
+                        OutcomeChanged?.Invoke("Compile stopped before completion. Review output.");
                     });
             }
         }
