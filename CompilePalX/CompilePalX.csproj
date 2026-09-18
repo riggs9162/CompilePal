@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
@@ -16,6 +16,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Resource Include="CompilePalIcon.ico" />
+    <Resource Include="Branding/CompilePalPlusPlus.png" />
     <None Include="Presets/**" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Parameters/**" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Plugins/**" CopyToOutputDirectory="PreserveNewest" />

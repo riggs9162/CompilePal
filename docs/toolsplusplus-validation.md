@@ -16,7 +16,7 @@ Validated on Windows x64 on 2026-09-18, based on upstream `adf6895afe325fbb76980
 - Real compiler cancellation terminated the live process. Leaked and missing map inputs returned failure; application checks classify standalone failures as fatal.
 - Standalone packing, compressed payload extraction and decompression round trip; packed test payload verified byte-for-byte.
 - Actual installed VBSPInfo read the standalone output and detected both lighting modes. The production CUBEMAPS code selected two passes using a fake game executable. Compressed input failed before game launch as expected.
-- WPF resources loaded; pink icon and controls rendered for visual inspection. All seven Windows icon sizes decode successfully.
+- WPF resources loaded; pink controls rendered for visual inspection. The v029.3 icon update restores the original hammer design in pink; its transparent background and all seven Windows icon sizes were checked, and the Windows build passed. Compiler behavior is unchanged from v029.2.
 
 ## Runtime limits
 

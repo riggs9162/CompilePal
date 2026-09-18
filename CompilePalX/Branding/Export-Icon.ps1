@@ -5,18 +5,14 @@ param(
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationCore, PresentationFramework, WindowsBase
 
-$source = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'CompilePalPlusPlus.xaml') -Raw
-$resources = [System.Windows.Markup.XamlReader]::Parse($source)
-$drawing = $resources['CompilePal.BrandIcon'].Drawing
+$source = [System.Windows.Media.Imaging.BitmapImage]::new([Uri](Join-Path $PSScriptRoot 'CompilePalPlusPlus.png'))
 $frames = [System.Collections.Generic.List[byte[]]]::new()
 $sizes = @(16, 24, 32, 48, 64, 128, 256)
 
 foreach ($size in $sizes) {
     $visual = [System.Windows.Media.DrawingVisual]::new()
     $context = $visual.RenderOpen()
-    $context.PushTransform([System.Windows.Media.ScaleTransform]::new($size / 256.0, $size / 256.0))
-    $context.DrawDrawing($drawing)
-    $context.Pop()
+    $context.DrawImage($source, [System.Windows.Rect]::new(0, 0, $size, $size))
     $context.Close()
     $bitmap = [System.Windows.Media.Imaging.RenderTargetBitmap]::new($size, $size, 96, 96, [System.Windows.Media.PixelFormats]::Pbgra32)
     $bitmap.Render($visual)

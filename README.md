@@ -1,8 +1,8 @@
 <p align="center">
 	<img
 		alt="CompilePal++"
-		src="CompilePalX/Branding/CompilePalPlusPlus.svg"
-		width="600"
+		src="CompilePalX/Branding/CompilePalPlusPlus.png"
+		width="128"
 	/>
 </p>
 
@@ -22,9 +22,9 @@ dotnet run --project ToolsPlusPlus.ManagerTests/ToolsPlusPlus.ManagerTests.cspro
 dotnet publish CompilePalX/CompilePalX.csproj -c Release -r win-x64 --self-contained true -o artifacts/win-x64
 ```
 
-The branding uses bright pink `#FF3B9D` with dark text on selected controls. Warning and error severity colors retain their original meaning. The editable icon is [WPF vector artwork](CompilePalX/Branding/CompilePalPlusPlus.xaml); regenerate its Windows icon with `powershell -STA -File CompilePalX/Branding/Export-Icon.ps1`.
+The branding uses bright pink `#FF3B9D` with dark text on selected controls. Warning and error severity colors retain their original meaning. The icon uses the original Compile Pal hammer design recolored pink, with its white and gray borders retained. The [PNG source](CompilePalX/Branding/CompilePalPlusPlus.png) is shared by the app and README; regenerate its Windows icon with `powershell -STA -File CompilePalX/Branding/Export-Icon.ps1`.
 
-CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. Get the complete Windows ZIP from the [CompilePal++ 029.2 prerelease](https://github.com/riggs9162/CompilePal/releases/tag/v029.2). The separately attached EXE is for replacing the executable in an existing complete installation; it still needs the accompanying configuration and resource files.
+CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. Get the complete Windows ZIP from the [CompilePal++ 029.3 prerelease](https://github.com/riggs9162/CompilePal/releases/tag/v029.3). The separately attached EXE is for replacing the executable in an existing complete installation; it still needs the accompanying configuration and resource files.
 
 The default branch is `toolspp/standalone-support`. The update checker reads this branch and links to releases in `riggs9162/CompilePal`; it never installs updates automatically. The Windows workflow tests and publishes build artifacts. Releases are tagged from reviewed commits and supplied with validated builds, without the upstream workflow's automatic version commits.
 

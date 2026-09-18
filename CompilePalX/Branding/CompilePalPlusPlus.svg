@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="600" height="112" viewBox="0 0 600 112" role="img" aria-labelledby="title">
-  <title id="title">CompilePal++</title>
-  <rect width="600" height="112" rx="20" fill="#fff" />
-  <rect x="16" y="16" width="80" height="80" rx="15" fill="#ff3b9d" />
-  <path d="M30 56h20M40 46v20M62 56h20M72 46v20" fill="none" stroke="#202024" stroke-width="6.25" stroke-linecap="round" />
-  <text x="120" y="75" fill="#202024" font-family="Segoe UI,Arial,sans-serif" font-size="52" font-weight="600">CompilePal<tspan fill="#ff3b9d">++</tspan></text>
-</svg>
