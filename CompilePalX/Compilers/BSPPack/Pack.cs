@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -34,14 +34,14 @@ namespace CompilePalX.Compilers.BSPPack
 
         private static KVSerializer KVSerializer = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
 
-        private static string bspZip;
-        private static string vpk;
-        private static string gameFolder;
-        private static string bspPath;
+        private string bspZip;
+        private string vpk;
+        private string gameFolder;
+        private string bspPath;
 
         private const string keysFolder = "Keys";
 
-        private static bool verbose;
+        private bool verbose;
         public static bool genParticleManifest;
 
         public static KeyValuePair<string, string> particleManifest;
@@ -80,7 +80,7 @@ namespace CompilePalX.Compilers.BSPPack
 
             try
             {
-                CompilePalLogger.LogLine("\nCompilePal - Automated Packaging", 900);
+                CompilePalLogger.LogLine("\nCompilePal++ - Automated Packaging", 900);
                 bspZip = context.Configuration.BSPZip;
                 vpk = context.Configuration.VPK;
                 gameFolder = context.Configuration.GameFolder;
@@ -196,7 +196,7 @@ namespace CompilePalX.Compilers.BSPPack
                         {
                             var vpkPath = parameter.Replace("\"", "").Replace("excludevpk ", "").TrimEnd(' ');
 
-                            string[] vpkFileList = GetVPKFileList(vpkPath);
+                            string[] vpkFileList = GetVPKFileList(vpkPath, cancellationToken);
 
                             foreach (string file in vpkFileList)
                             {
@@ -271,7 +271,7 @@ namespace CompilePalX.Compilers.BSPPack
                     return;
 
                 string unpackDir = System.IO.Path.GetTempPath() + Guid.NewGuid();
-                UnpackBSP(unpackDir);
+                UnpackBSP(unpackDir, cancellationToken);
                 AssetUtils.FindBspPakDependencies(map, unpackDir);
 
                 CompilePalLogger.LogLine("Initializing pak file...");
@@ -370,7 +370,7 @@ namespace CompilePalX.Compilers.BSPPack
                         var combinedPath = Path.Combine(path, "_tempResponseFile.txt");
                         File.WriteAllText(combinedPath, testedFiles);
 
-                        PackVPK(vpkName, combinedPath, path);
+                        PackVPK(vpkName, combinedPath, path, cancellationToken);
 
                         File.Delete(combinedPath);
                     }
@@ -395,7 +395,7 @@ namespace CompilePalX.Compilers.BSPPack
                     }
                     else
                     {
-                        PackFileList(context, outputFile);
+                        PackFileList(context, outputFile, cancellationToken);
                     }
 
                 }
@@ -454,7 +454,11 @@ namespace CompilePalX.Compilers.BSPPack
             catch (FileNotFoundException e)
             {
                 CompilePalLogger.LogCompileError($"Could not find {e.FileName}\n",
-                    new Error($"Could not find {e.FileName}", ErrorSeverity.Error));
+                    new Error($"Could not find {e.FileName}", ErrorSeverity.FatalError));
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (ThreadAbortException)
             {
@@ -468,7 +472,7 @@ namespace CompilePalX.Compilers.BSPPack
             }
         }
 
-        static void PackFileList(CompileContext context, string outputFile)
+        private void PackFileList(CompileContext context, string outputFile, CancellationToken cancellationToken)
         {
             if (File.Exists(context.BSPFile))
             {
@@ -483,7 +487,8 @@ namespace CompilePalX.Compilers.BSPPack
             }
 
             CompilePalLogger.LogLine("Running bspzip...");
-            PackBSP(outputFile);
+            PackBSP(outputFile, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
 
             // don't copy if vmf directory is also the output directory
             if (!Path.GetFullPath(bspPath).Equals(Path.GetFullPath(context.BSPFile), StringComparison.OrdinalIgnoreCase))
@@ -500,160 +505,54 @@ namespace CompilePalX.Compilers.BSPPack
             }
         }
 
-        static void UnpackBSP(string unpackDir)
+        private void UnpackBSP(string unpackDir, CancellationToken cancellationToken)
         {
-            // unpacks the pak file and extracts it to a temp location
-
-            /* info: vbsp.exe creates files in the pak file that may have
-             * dependencies that are not listed anywhere else, as is the
-             * case for water materials. We use this method to extract the
-             * pak file to a temp folder and read the dependencies of its files. */
-
-            string arguments = "-extractfiles \"$bspold\" \"$dir\"";
-            arguments = arguments.Replace("$bspold", bspPath);
-            arguments = arguments.Replace("$dir", unpackDir);
-
-            var startInfo = new ProcessStartInfo(bspZip, arguments);
-            startInfo.UseShellExecute = false;
-            startInfo.CreateNoWindow = true;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.EnvironmentVariables["VPROJECT"] = gameFolder;
-
-            var p = new Process { StartInfo = startInfo };
-            p.Start();
-            string output = p.StandardOutput.ReadToEnd();
-
-            p.WaitForExit();
-
+            RunBspZip($"-extractfiles \"{Path.GetFullPath(bspPath)}\" \"{Path.GetFullPath(unpackDir)}\"", cancellationToken);
         }
 
-        static void PackBSP(string outputFile)
+        private void PackBSP(string outputFile, CancellationToken cancellationToken)
         {
-            string arguments = "-addlist \"$bspnew\"  \"$list\" \"$bspold\"";
-            arguments = arguments.Replace("$bspnew", bspPath);
-            arguments = arguments.Replace("$bspold", bspPath);
-            arguments = arguments.Replace("$list", outputFile);
+            string fullBspPath = Path.GetFullPath(bspPath);
+            RunBspZip($"-addlist \"{fullBspPath}\" \"{Path.GetFullPath(outputFile)}\" \"{fullBspPath}\"", cancellationToken);
+        }
 
-            var startInfo = new ProcessStartInfo(bspZip, arguments)
+        private void RunBspZip(string arguments, CancellationToken cancellationToken)
+        {
+            var startInfo = new ProcessStartInfo(ToolsPlusPlusPaths.Resolve(bspZip, "."), arguments)
             {
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true,
-                EnvironmentVariables =
-                {
-                    ["VPROJECT"] = gameFolder
-                }
+                WorkingDirectory = ToolsPlusPlusPaths.WorkingDirectory(bspZip, ".")
             };
+            startInfo.Environment["VPROJECT"] = gameFolder;
+            ToolProcessRunner.Run(startInfo, cancellationToken, LogUtilityOutput);
+        }
 
-            var p = new Process { StartInfo = startInfo };
-
-            try
-            {
-                p.Start();
-            }
-            catch (Exception e)
-            {
-                CompilePalLogger.LogDebug(e.ToString());
-                CompilePalLogger.LogCompileError($"Failed to run executable: {p.StartInfo.FileName}\n", new Error($"Failed to find executable: {p.StartInfo.FileName}", ErrorSeverity.FatalError));
-                return;
-            }
-
-            string output = p.StandardOutput.ReadToEnd();
+        private void LogUtilityOutput(string output)
+        {
             if (verbose)
                 CompilePalLogger.Log(output);
             else
                 CompilePalLogger.LogDebug(output);
-
-            p.WaitForExit();
-            if (p.ExitCode != 0) {
-                // this indicates an access violation. BSPZIP may have crashed because of too many files being packed
-                if (p.ExitCode == -1073741819)
-                    CompilePalLogger.LogCompileError($"BSPZIP exited with code: {p.ExitCode}, this might indicate that too many files are being packed\n", new Error($"BSPZIP exited with code: {p.ExitCode}, this might indicate that too many files are being packed\n", ErrorSeverity.FatalError));
-                else
-                    CompilePalLogger.LogCompileError($"BSPZIP exited with code: {p.ExitCode}\n", new Error($"BSPZIP exited with code: {p.ExitCode}\n", ErrorSeverity.Warning));
-            }
-
         }
 
-        static void PackVPK(string targetVPK, string responseFile, string searchPath)
+        private void PackVPK(string targetVPK, string responseFile, string searchPath, CancellationToken cancellationToken)
         {
-            string arguments = $"a \"{targetVPK}\" \"@{responseFile}\"";
-
-            var p = new Process
+            var startInfo = new ProcessStartInfo(ToolsPlusPlusPaths.Resolve(vpk, "."),
+                $"a \"{Path.GetFullPath(targetVPK)}\" \"@{Path.GetFullPath(responseFile)}\"")
             {
-                StartInfo = new ProcessStartInfo
-
-                {
-                    WorkingDirectory = searchPath,
-                    FileName = vpk,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                }
+                WorkingDirectory = searchPath
             };
-
-
-            try
-            {
-                p.Start();
-            }
-            catch (Exception e)
-            {
-                CompilePalLogger.LogDebug(e.ToString());
-                CompilePalLogger.LogCompileError($"Failed to run executable: {p.StartInfo.FileName}\n", new Error($"Failed to run executable: {p.StartInfo.FileName}", ErrorSeverity.FatalError));
-                return;
-            }
-
-            string output = p.StandardOutput.ReadToEnd();
-            string errOutput = p.StandardError.ReadToEnd();
-            if (verbose)
-            {
-                CompilePalLogger.Log(output);
-                CompilePalLogger.Log(errOutput);
-            }
-
-
-            p.WaitForExit();
+            ToolProcessRunner.Run(startInfo, cancellationToken, LogUtilityOutput);
         }
 
-        static string[] GetVPKFileList(string VPKPath)
-		{
-            string arguments = $"l \"{VPKPath}\"";
-
-            var p = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    WorkingDirectory = Path.GetDirectoryName(vpk),
-                    FileName = vpk,
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true,
-                }
-            };
-            
-            p.Start();
-
-            string output = p.StandardOutput.ReadToEnd();
-            string errOutput = p.StandardError.ReadToEnd();
-            if (verbose)
-            {
-                CompilePalLogger.Log(errOutput);
-            }
-
-            p.WaitForExit();
-
-            char[] delims = new[] { '\r', '\n' };
-            return output.Split(delims, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        static void p_OutputDataReceived(object sender, DataReceivedEventArgs e)
+        private string[] GetVPKFileList(string vpkPath, CancellationToken cancellationToken)
         {
-            CompilePalLogger.LogLine(e.Data);
+            string executable = ToolsPlusPlusPaths.Resolve(vpk, ".");
+            var startInfo = new ProcessStartInfo(executable, $"l \"{Path.GetFullPath(vpkPath)}\"")
+            {
+                WorkingDirectory = Path.GetDirectoryName(executable)
+            };
+            string output = ToolProcessRunner.Run(startInfo, cancellationToken, LogUtilityOutput);
+            return output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         }
 
         public static List<string> GetSourceDirectories(string gamePath, bool verbose = true)

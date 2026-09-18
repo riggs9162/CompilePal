@@ -121,6 +121,9 @@ namespace CompilePalX
 
         public static void StartCompile()
         {
+            if (IsCompiling)
+                return;
+
             OnStart();
 
             // Tells windows to not go to sleep during compile
@@ -142,6 +145,8 @@ namespace CompilePalX
 
         private static void CompileThreaded(CancellationToken cancellationToken)
         {
+            bool contextBackedUp = false;
+            bool completed = false;
             try
             {
                 ProgressManager.SetProgress(0);
@@ -170,12 +175,14 @@ namespace CompilePalX
 	                OrderManager.UpdateOrder();
 
                     GameConfigurationManager.BackupCurrentContext();
+                    contextBackedUp = true;
                     var buildContext = GameConfigurationManager.BuildContext(map);
 					foreach (var compileProcess in OrderManager.CurrentOrder)
 					{
                         cancellationToken.ThrowIfCancellationRequested();
                         currentCompileProcess = compileProcess;
                         compileProcess.Run(buildContext, cancellationToken);
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         compileErrors.AddRange(currentCompileProcess.CompileErrors);
 
@@ -200,12 +207,34 @@ namespace CompilePalX
 
                     CompilePalLogger.LogLineFileLocation($"Compiled Map: {buildContext.CopyLocation}\n", buildContext.CopyLocation);
                     GameConfigurationManager.RestoreCurrentContext();
+                    contextBackedUp = false;
                 }
 
                 if (!cancellationToken.IsCancellationRequested)
-                    MainWindow.ActiveDispatcher.Invoke(() => postCompile(mapErrors));
+                    MainWindow.ActiveDispatcher.Invoke(() =>
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        postCompile(mapErrors);
+                        completed = true;
+                    });
             }
-            catch (OperationCanceledException) { ProgressManager.ErrorProgress(); }
+            catch (OperationCanceledException) { }
+            catch (Exception exception)
+            {
+                CompilePalLogger.LogLine($"Compile failed: {exception}");
+            }
+            finally
+            {
+                if (contextBackedUp)
+                    GameConfigurationManager.RestoreCurrentContext();
+                if (!completed)
+                    MainWindow.ActiveDispatcher.Invoke(() =>
+                    {
+                        CompilePalLogger.LogLine("Compile stopped before completion.");
+                        FinishCompile();
+                        ProgressManager.ErrorProgress();
+                    });
+            }
         }
 
         private static void postCompile(List<MapErrors> errors)
@@ -249,18 +278,13 @@ namespace CompilePalX
                 }
             }
 
-            OnFinish();
-
-            compileTimeStopwatch.Reset();
-
-            IsCompiling = false;
-
-            // Tells windows it's now okay to enter sleep
-            NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS);
+            FinishCompile();
         }
 
         public static void CancelCompile()
         {
+            if (!IsCompiling || cts.IsCancellationRequested)
+                return;
             try
             {
                 cts.Cancel();
@@ -268,13 +292,16 @@ namespace CompilePalX
             catch
             {
             }
+            CompilePalLogger.LogLineColor("Stopping compile...", (Brush) Application.Current.TryFindResource("CompilePal.Brushes.Severity4"));
+        }
+
+        private static void FinishCompile()
+        {
+            compileTimeStopwatch.Reset();
             IsCompiling = false;
-
-            ProgressManager.SetProgress(0);
-
-            CompilePalLogger.LogLineColor("Compile forcefully ended.", (Brush) Application.Current.TryFindResource("CompilePal.Brushes.Severity4"));
-
-            postCompile(null);
+            cts.Dispose();
+            NativeMethods.SetThreadExecutionState(NativeMethods.ES_CONTINUOUS);
+            OnFinish();
         }
 
         public static Stopwatch GetTime()

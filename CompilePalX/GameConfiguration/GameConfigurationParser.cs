@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -40,17 +40,11 @@ namespace CompilePalX {
 
                         // use vbsp as a backup path for finding other compile executables if they are in a non standard location
                         var vbsp = GetFullPath((hdb["BSP"] ?? hdb["bsp"]).ToString(), binFolder);
-                        var vbspPath = Path.GetDirectoryName(vbsp);
 
-                        var bspzip = FindPath("bspzip.exe", binFolder, vbspPath);
-                        var vbspinfo = FindPath("vbspinfo.exe", binFolder, vbspPath);
-                        var vpk = FindPath("vpk.exe", binFolder, vbspPath);
+                        var bspzip = ToolsPlusPlusPaths.FindCompanion("bspzip", binFolder, vbsp) ?? string.Empty;
+                        var vbspinfo = ToolsPlusPlusPaths.FindCompanion("vbspinfo", binFolder, vbsp) ?? string.Empty;
+                        var vpk = ToolsPlusPlusPaths.FindCompanion("vpk", binFolder, vbsp) ?? string.Empty;
 
-                        if (Path.GetDirectoryName(bspzip) != binFolder)
-                        {
-                            CompilePalLogger.LogLineDebug($"Bin folder \"{binFolder}\" differs from compiler location \"{Path.GetDirectoryName(bspzip)}\"");
-                            binFolder = Path.GetDirectoryName(bspzip);
-                        }
 
                         GameConfiguration game = new GameConfiguration
                         {
@@ -94,11 +88,7 @@ namespace CompilePalX {
 
         private static string GetFullPath(string line, string gameInfoDir)
         {
-            if (!line.StartsWith("..") || !line.StartsWith(""))
-                return line;
-
-            string fullPath = Path.GetFullPath(Path.Combine(gameInfoDir, line));
-            return fullPath;
+            return ToolsPlusPlusPaths.Resolve(line, gameInfoDir);
         }
 
         private static int? GetSteamAppID(GameConfiguration config)
@@ -115,23 +105,6 @@ namespace CompilePalX {
                 Int32.TryParse(appIDValue.ToString(), out int appID);
                 return appID;
             }
-        }
-
-        
-        private static string? FindPath(string program, string binFolder, string backupBinFolder)
-        {
-            var path = Path.Combine(binFolder, program);
-            if (File.Exists(path))
-            {
-                return path;
-            }
-
-            // program does not exist in standard bin folder, fallback to trying to locate it by using a known executable
-            CompilePalLogger.LogLineDebug($"{program} does not exist at \"{path}\", using known compiler location {backupBinFolder}");
-
-            path = Path.Combine(backupBinFolder, program);
-            return File.Exists(path) ? path : null;
-
         }
     }
 }

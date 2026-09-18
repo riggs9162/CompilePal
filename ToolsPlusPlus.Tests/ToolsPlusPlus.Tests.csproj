@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../CompilePalX/GameConfiguration/ToolsPlusPlusPaths.cs" Link="ToolsPlusPlusPaths.cs" />
+    <Compile Include="../CompilePalX/GameConfiguration/GameConfiguration.cs" Link="GameConfiguration.cs" />
+    <Compile Include="../CompilePalX/GameConfiguration/GameConfigurationParser.cs" Link="GameConfigurationParser.cs" />
+    <Compile Include="../CompilePalX/Compilers/CompileExecutable.cs" Link="CompileExecutable.cs" />
+    <Compile Include="../CompilePalX/Compilers/ToolProcessRunner.cs" Link="ToolProcessRunner.cs" />
+    <Compile Include="../CompilePalX/Compilers/CubemapProcess.cs" Link="CubemapProcess.cs" />
+    <PackageReference Include="ValveKeyValue" Version="0.20.0.417" />
+  </ItemGroup>
+</Project>

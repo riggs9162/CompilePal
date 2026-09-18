@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
 using System.Threading;
-using System.Windows.Media;
+using System.Threading.Tasks;
 using CompilePalX.Compiling;
 
 namespace CompilePalX.Compilers
@@ -19,21 +15,22 @@ namespace CompilePalX.Compilers
 
             if (!CanRun(c)) return;
 
-            // listen for cancellations
-            cancellationToken.Register(() =>
+            if (Name == "REPACK" && c.Configuration.SteamAppID == 4000
+                && !ToolsPlusPlusPaths.SupportsGModRepack(c.Configuration.BSPZip))
             {
-                try
-                {
-                    Cancel();
-                }
-                catch (InvalidOperationException) { }
-                catch (Exception e) { ExceptionHandler.LogException(e); }
-            });
+                CompilePalLogger.LogCompileError(
+                    "Garry's Mod REPACK requires an existing bspzip++.exe. Select the Tools++ folder in Game Configuration.\n",
+                    new Error("Garry's Mod REPACK requires BSPZIP++", ErrorSeverity.FatalError));
+                return;
+            }
 
-            Process = new Process();
-            if (Metadata.ReadOutput)
+            using var process = new Process();
+            Process = process;
+            try
             {
-                Process.StartInfo = new ProcessStartInfo
+                if (Metadata.ReadOutput)
+                {
+                    process.StartInfo = new ProcessStartInfo
                     {
                         RedirectStandardOutput = true,
                         RedirectStandardInput = true,
@@ -41,88 +38,111 @@ namespace CompilePalX.Compilers
                         UseShellExecute = false,
                         CreateNoWindow = true,
                     };
-            }
+                }
 
-            var args = GameConfigurationManager.SubstituteValues(GetParameterString(), c.MapFile);
+                var args = GameConfigurationManager.SubstituteValues(GetParameterString(), c.MapFile);
+                bool normalPriority = args.Contains("-normal_priority");
+                if (normalPriority)
+                    args = args.Replace("-normal_priority", string.Empty);
 
-            bool normalPriority = false;
-            if (args.Contains("-normal_priority"))
-            {
-                args = args.Replace("-normal_priority", string.Empty);
-                normalPriority = true;
-            }
+                process.StartInfo.FileName = ToolsPlusPlusPaths.Clean(
+                    GameConfigurationManager.SubstituteValues(Metadata.Path, quote: false));
+                process.StartInfo.Arguments = args;
+                string workingDirectory = Metadata.WorkingDirectory != null
+                    ? GameConfigurationManager.SubstituteValues(Metadata.WorkingDirectory, quote: false)
+                    : ".";
+                bool usesDefaultDirectory = string.IsNullOrEmpty(Metadata.WorkingDirectory)
+                    || Metadata.WorkingDirectory == "$binFolder$" || Metadata.WorkingDirectory == ".";
+                process.StartInfo.WorkingDirectory = ToolsPlusPlusPaths.WorkingDirectory(
+                    process.StartInfo.FileName, workingDirectory, usesDefaultDirectory);
 
-            Process.StartInfo.FileName = GameConfigurationManager.SubstituteValues(Metadata.Path);
-            Process.StartInfo.Arguments = string.Join(" ", args);
-            Process.StartInfo.WorkingDirectory = Metadata.WorkingDirectory != null ? GameConfigurationManager.SubstituteValues(Metadata.WorkingDirectory, quote: false) : ".";
+                CompilePalLogger.LogLineDebug($"Running '{process.StartInfo.FileName}' with args '{process.StartInfo.Arguments}'");
+                cancellationToken.ThrowIfCancellationRequested();
 
-            CompilePalLogger.LogLineDebug($"Running '{Process.StartInfo.FileName}' with args '{Process.StartInfo.Arguments}'");
-
-            try
-            {
-                if (cancellationToken.IsCancellationRequested)
+                try
                 {
-                    CompilePalLogger.LogDebug($"Cancelled {Metadata.Name}");
+                    process.Start();
+                }
+                catch (Exception exception)
+                {
+                    CompilePalLogger.LogDebug(exception.ToString());
+                    CompilePalLogger.LogCompileError($"Failed to run executable: {process.StartInfo.FileName}\n",
+                        new Error($"Failed to run executable: {process.StartInfo.FileName}", ErrorSeverity.FatalError));
                     return;
                 }
-                Process.Start();
+
+                using var registration = cancellationToken.Register(() => StopProcess(process));
+                SetPriority(process, normalPriority);
+
+                if (Metadata.ReadOutput)
+                {
+                    Task<string> errorOutput = process.StandardError.ReadToEndAsync(cancellationToken);
+                    ReadOutput(process, cancellationToken);
+                    string errors = errorOutput.GetAwaiter().GetResult();
+                    cancellationToken.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrWhiteSpace(errors))
+                        CompilePalLogger.LogProgressive(errors);
+
+                    bool checkExitCode = Metadata.CheckExitCode
+                        || ToolsPlusPlusPaths.IsPlusPlus(process.StartInfo.FileName, "vbsp")
+                        || ToolsPlusPlusPaths.IsPlusPlus(process.StartInfo.FileName, "vvis")
+                        || ToolsPlusPlusPaths.IsPlusPlus(process.StartInfo.FileName, "vrad")
+                        || ToolsPlusPlusPaths.IsPlusPlus(process.StartInfo.FileName, "bspzip");
+                    if (checkExitCode && process.ExitCode != 0)
+                        CompilePalLogger.LogCompileError($"{Name} exited with code: {process.ExitCode} (0x{process.ExitCode:X})\n",
+                            new Error($"{Name} exited with code: {process.ExitCode} (0x{process.ExitCode:X})", ErrorSeverity.FatalError));
+                }
             }
-            catch (Exception e)
+            finally
             {
-                CompilePalLogger.LogDebug(e.ToString());
-                CompilePalLogger.LogCompileError($"Failed to run executable: {Process.StartInfo.FileName}\n", new Error($"Failed to run executable: {Process.StartInfo.FileName}", ErrorSeverity.FatalError));
-                return;
-            }
-
-            if (normalPriority)
-            {
-                Process.PriorityClass = ProcessPriorityClass.Normal;
-                CompilePalLogger.LogLine($"Running {Name} with normal priority");
-            }
-            else 
-                Process.PriorityClass = ProcessPriorityClass.BelowNormal;
-
-            if (Metadata.ReadOutput)
-            { 
-                ReadOutput(cancellationToken);
-
-                if (Metadata.CheckExitCode && Process.ExitCode != 0)
-                    CompilePalLogger.LogCompileError($"{Name} exited with code: {Process.ExitCode} (0x{Process.ExitCode.ToString("X")})\n", new Error($"{Name} exited with code: {Process.ExitCode} (0x{Process.ExitCode.ToString("X")})", ErrorSeverity.Warning));
+                Process = null;
             }
         }
 
-        private void ReadOutput(CancellationToken cancellationToken)
+        private void SetPriority(Process process, bool normalPriority)
         {
-            char[] buffer = new char [256];
-            Task<int>? read = null;
+            try
+            {
+                process.PriorityClass = normalPriority ? ProcessPriorityClass.Normal : ProcessPriorityClass.BelowNormal;
+                if (normalPriority)
+                    CompilePalLogger.LogLine($"Running {Name} with normal priority");
+            }
+            catch (InvalidOperationException) { }
+            catch (Win32Exception exception)
+            {
+                CompilePalLogger.LogDebug($"Could not set {Name} process priority: {exception.Message}");
+            }
+        }
+
+        private static void StopProcess(Process process)
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(entireProcessTree: true);
+                    process.WaitForExit();
+                }
+            }
+            catch (InvalidOperationException) { }
+            catch (Win32Exception exception)
+            {
+                CompilePalLogger.LogDebug($"Could not stop compiler process: {exception.Message}");
+            }
+        }
+
+        private static void ReadOutput(Process process, CancellationToken cancellationToken)
+        {
+            char[] buffer = new char[256];
             while (true)
             {
-                if (cancellationToken.IsCancellationRequested)
-                    return;
-
-                if (read == null)
-                    read = Process.StandardOutput.ReadAsync(buffer, 0, buffer.Length);
-
-                read.Wait(100, cancellationToken); // an arbitrary timeout
-
-                if (read.IsCompleted)
-                {
-                    if (read.Result > 0)
-                    {
-                        string text = new (buffer, 0, read.Result);
-                        CompilePalLogger.LogProgressive(text);
-
-                        read = null; // task completed so we need to create a new one
-                        continue;
-                    }
-
-                    // got -1, process ended
+                int length = process.StandardOutput.ReadAsync(buffer.AsMemory(), cancellationToken)
+                    .AsTask().GetAwaiter().GetResult();
+                if (length == 0)
                     break;
-                }
-
+                CompilePalLogger.LogProgressive(new string(buffer, 0, length));
             }
-
-            Process.WaitForExit();
+            process.WaitForExitAsync(cancellationToken).GetAwaiter().GetResult();
         }
     }
 }

@@ -110,6 +110,7 @@ namespace CompilePalX
         public static void AssembleParameters()
         {
             CompileProcesses.Clear();
+            Directory.CreateDirectory(PluginFolder);
 
             CompileProcesses.Add(new BSPPack());
             CompileProcesses.Add(new CubemapProcess());

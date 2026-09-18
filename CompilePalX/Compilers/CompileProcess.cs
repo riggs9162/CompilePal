@@ -105,6 +105,10 @@ namespace CompilePalX
                 int currentAppID = (int)GameConfigurationManager.GameConfiguration!.SteamAppID!;
 
                 // supported game ID list should take precedence. If defined, check that current GameConfiguration SteamID is in whitelist
+                if (Name == "REPACK" && currentAppID == 4000
+                    && ToolsPlusPlusPaths.SupportsGModRepack(GameConfigurationManager.GameConfiguration.BSPZip))
+                    return true;
+
                 if (Metadata.CompatibleGames != null)
                     return Metadata.CompatibleGames.Contains(currentAppID);
 

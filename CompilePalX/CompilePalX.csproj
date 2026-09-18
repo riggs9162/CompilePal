@@ -27,6 +27,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="../LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../docs/toolsplusplus.md" Link="ToolsPlusPlus-Guide.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../docs/toolsplusplus-validation.md" Link="toolsplusplus-validation.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Analytics" Version="3.8.1" />
