@@ -12,7 +12,11 @@
 
 This fork adds standalone VBSP++, VVIS++, VRAD++ and BSPZIP++ selection while retaining Compile Pal's existing preset format and executable name, `CompilePalX.exe`. See the [Tools++ guide](docs/toolsplusplus.md) for configuration, validation and utility requirements. Tools++ binaries must be installed separately.
 
+## Why this fork exists
 
+**A note from Riggs:** I had trouble getting the standalone Tools++ compilers working with regular CompilePal in my setup, even after changing the compiler paths. CompilePal++ now works for my workflow, and this fork grew out of that experience. This is a report of my own experience, not a claim that regular CompilePal cannot work with Tools++ for other users.
+
+The fork adds tool selection and discovery, GMod REPACK support with BSPZIP++, and improvements to failure handling and cancellation. See the [validation report](docs/toolsplusplus-validation.md) for what was tested and the remaining limitations.
 
 ## Build this fork
 
@@ -56,14 +60,22 @@ The default branch is `toolspp/standalone-support`. The update checker reads thi
 
 Report issues with this fork in its own repository. For the original project, see [Compile Pal's issue tracker](https://github.com/ruarai/CompilePal/issues).
 
-### Developers
+## Credits
+
+- [CompilePal](https://github.com/ruarai/CompilePal), its original developers and contributors, for the application this fork builds on and the original hammer icon design. The upstream [license](LICENSE) and attribution are retained.
+- [ficool2](https://github.com/ficool2) and the [Tools++ developers](https://ficool2.github.io/HammerPlusPlus-Website/tools.html), for the standalone compiler suite. These tools are separate projects and are not bundled with this fork. This credit does not imply their support or endorsement of CompilePal++.
+- [Riggs](https://github.com/riggs9162), maintainer of this unofficial fork.
+
+### Original CompilePal developers
+
 - [ruarai](https://github.com/ruarai)
 - [maxdup](https://github.com/maxdup)
 - [Exactol](https://github.com/Exactol)
 - iMilo
 
 
-### Bug Testing
+### Original CompilePal bug testing
+
 - wareya
 - Gangleider 
 - Matt2468rv 
