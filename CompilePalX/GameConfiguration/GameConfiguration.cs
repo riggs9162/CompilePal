@@ -12,6 +12,7 @@ namespace CompilePalX
         public string BSPZip { get; set; }
         public string VBSPInfo { get; set; }
         public string VPK { get; set; }
+        public string? SourceCubemap { get; set; }
         public string GameEXE { get; set; }
         public string MapFolder { get; set; }
         public string SDKMapFolder { get; set; }
@@ -29,7 +30,7 @@ namespace CompilePalX
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return BSPZip == other.BSPZip && VBSPInfo == other.VBSPInfo && VPK == other.VPK && GameFolder == other.GameFolder && VBSP == other.VBSP && VVIS == other.VVIS && VRAD == other.VRAD && GameEXE == other.GameEXE && MapFolder == other.MapFolder && SDKMapFolder == other.SDKMapFolder && BinFolder == other.BinFolder && Name == other.Name && SteamAppID == other.SteamAppID;
+            return BSPZip == other.BSPZip && VBSPInfo == other.VBSPInfo && VPK == other.VPK && SourceCubemap == other.SourceCubemap && GameFolder == other.GameFolder && VBSP == other.VBSP && VVIS == other.VVIS && VRAD == other.VRAD && GameEXE == other.GameEXE && MapFolder == other.MapFolder && SDKMapFolder == other.SDKMapFolder && BinFolder == other.BinFolder && Name == other.Name && SteamAppID == other.SteamAppID;
         }
 
         public override bool Equals(object? obj)
@@ -46,6 +47,7 @@ namespace CompilePalX
             hashCode.Add(BSPZip);
             hashCode.Add(VBSPInfo);
             hashCode.Add(VPK);
+            hashCode.Add(SourceCubemap);
             hashCode.Add(GameFolder);
             hashCode.Add(VBSP);
             hashCode.Add(VVIS);
