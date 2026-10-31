@@ -367,6 +367,9 @@ namespace CompilePalX.Compilers.BSPPack
                             }
                         }
 
+                        if (testedFiles.Length == 0)
+                            continue;
+
                         var combinedPath = Path.Combine(path, "_tempResponseFile.txt");
                         File.WriteAllText(combinedPath, testedFiles);
 
