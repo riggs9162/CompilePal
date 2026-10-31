@@ -46,7 +46,7 @@ For 029.4, update using the full ZIP so the new argument catalogs are included. 
 * Packing
 * Error Checking
 * Not freezing your computer while compiling
-* Cubemaps
+* Cubemaps, built by the game or in seconds with [SourceCubemap](docs/sourcecubemap.md)
 * Manifest Generation
 * Nav File Generation
 * Plugins and Custom Compile Steps
@@ -55,6 +55,7 @@ For 029.4, update using the full ZIP so the new argument catalogs are included. 
 
 ## Guides
 * [Quick Start](Guides/QuickStart.md)
+* [Cubemaps Without Starting the Game](docs/sourcecubemap.md)
 * [Reporting An Issue](Guides/Issues.md)
 * [Plugin Development (Beta)](Guides/Plugins.md)
 * [Custom Compile Steps](Guides/Custom.md)

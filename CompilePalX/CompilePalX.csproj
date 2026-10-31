@@ -31,6 +31,7 @@
     <None Include="../LICENSE" Link="LICENSE" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../docs/toolsplusplus.md" Link="ToolsPlusPlus-Guide.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../docs/workspace.md" Link="Workspace-Guide.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../docs/sourcecubemap.md" Link="SourceCubemap-Guide.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="../docs/toolsplusplus-validation.md" Link="toolsplusplus-validation.md" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>
