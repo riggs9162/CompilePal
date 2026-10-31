@@ -27,7 +27,7 @@ Appearance and layout preferences are per Windows user, stored in `%LocalAppData
 
 ## Compile feedback
 
-**Check tools** inspects included maps, their presets, relevant executable paths, empty option values, and PACK/CUBEMAPS ordering relative to REPACK. The same checks appear before starting a compile if they find issues. They are advisory: custom workflows can choose **Compile anyway**. They do not launch tools, validate compiler versions, inspect all content dependencies, or parse custom-program command lines.
+**Check tools** inspects included maps, their presets, relevant executable paths, empty option values, PACK and cubemap stage ordering relative to REPACK, and presets that run both cubemap stages. The same checks appear before starting a compile if they find issues. They are advisory: custom workflows can choose **Compile anyway**. They do not launch tools, validate compiler versions, inspect all content dependencies, or parse custom-program command lines.
 
 Stages report running, finished duration, stopped, or failed status. The footer reports overall completion or an incomplete compile. Output remains visible while configuring stages. **Ctrl+F** focuses output search. The warnings/errors view includes detected diagnostic messages and text containing warning, error, or failed. Filtering leaves the original log and clickable diagnostic links intact; return to the unfiltered view to use those links. **Copy log** copies the complete log.
 

@@ -31,6 +31,7 @@ internal static class WorkspacePreflight
                 case "PACK": required["BSPZIP"] = game.BSPZip; break;
                 case "REPACK": required["BSPZIP"] = game.BSPZip; break;
                 case "CUBEMAPS": required["VBSPInfo"] = game.VBSPInfo; required["Game executable"] = game.GameEXE; break;
+                case "SOURCECUBEMAP": required["SourceCubemap"] = game.SourceCubemap; break;
             }
         }
         foreach (var tool in required)
@@ -41,8 +42,10 @@ internal static class WorkspacePreflight
         {
             var stages = enabled.Where(process => process.PresetDictionary.ContainsKey(map.Preset!)).OrderBy(process => process.Ordering).ToList();
             int repack = stages.FindIndex(stage => stage.Name == "REPACK");
-            if (repack >= 0 && stages.Skip(repack + 1).Any(stage => stage.Name is "PACK" or "CUBEMAPS"))
-                results.Add($"{map.FullMapName}: put PACK and CUBEMAPS before REPACK when compressing the BSP.");
+            if (repack >= 0 && stages.Skip(repack + 1).Any(stage => stage.Name is "PACK" or "CUBEMAPS" or "SOURCECUBEMAP"))
+                results.Add($"{map.FullMapName}: put PACK and cubemap stages before REPACK when compressing the BSP.");
+            if (stages.Any(stage => stage.Name == "CUBEMAPS") && stages.Any(stage => stage.Name == "SOURCECUBEMAP"))
+                results.Add($"{map.FullMapName}: CUBEMAPS and SOURCECUBEMAP both build cubemaps, so keep only one.");
             foreach (var stage in stages)
                 foreach (var option in stage.PresetDictionary[map.Preset!].Where(option => option.CanHaveValue && string.IsNullOrWhiteSpace(option.Value)))
                     results.Add($"{map.FullMapName} / {stage.Name}: enter a value for {option.Name}, or disable it.");
