@@ -1,0 +1,202 @@
+{
+  "Name": "Ultra",
+  "Map": null,
+  "MapRegex": null,
+  "Processes": {
+    "VBSP": [
+      {
+        "Name": "cullall (Tools++)",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "defaultcubemap (Tools++)",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "Leak Test",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Not supported on newer Source."
+      },
+      {
+        "Name": "Nodraw triggers",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Only affects triggers using %compiletrigger. Func_occluders should use toolsoccluder instead of toolstrigger, to avoid issues."
+      },
+      {
+        "Name": "maxlightmapdim (Tools++)",
+        "Value": "125",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 32."
+      },
+      {
+        "Name": "blocksize (Tools++)",
+        "Value": "4096",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 1024."
+      },
+      {
+        "Name": "Allow Dynamic Props As Static",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      }
+    ],
+    "VVIS": [],
+    "VRAD": [
+      {
+        "Name": "Ambient occlusion",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "AO brush samples",
+        "Value": "256",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 32."
+      },
+      {
+        "Name": "AO prop samples",
+        "Value": "64",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 16."
+      },
+      {
+        "Name": "AO radius",
+        "Value": "40",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 40."
+      },
+      {
+        "Name": "Extra Sky",
+        "Value": "32",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Normal default is 1; -final default is 16"
+      },
+      {
+        "Name": "extrasoft (Tools++)",
+        "Value": "16",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 1."
+      },
+      {
+        "Name": "Final",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
+      },
+      {
+        "Name": "forcetextureshadows (Tools++)",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "globalreflectivityscale (Tools++)",
+        "Value": "2",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Compiler default: 1."
+      },
+      {
+        "Name": "HDR",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "translucentshadows (Tools++)",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "worldtextureshadows (Tools++)",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "Texture Shadows",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Models must be compiled with $casttextureshadows or be listed with forcetextureshadow in the lights file"
+      },
+      {
+        "Name": "Static Prop Polys",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "Static Prop Sample Scale",
+        "Value": "32",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": "Note that adding -final is the same as having -StaticPropSampleScale 16."
+      },
+      {
+        "Name": "Static Prop Lighting",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " always enabled for light_spot entities."
+      },
+      {
+        "Name": "Smooth",
+        "Value": "30",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      }
+    ],
+    "COPY": [],
+    "GAME": [
+      {
+        "Name": "Developer Mode",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
+      },
+      {
+        "Name": "Hijack",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "No Video",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
+      },
+      {
+        "Name": "No border",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
+      },
+      {
+        "Name": "Windowed",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
+      }
+    ],
+    "PACK": [],
+    "SOURCECUBEMAP": [],
+    "REPACK": []
+  }
+}
