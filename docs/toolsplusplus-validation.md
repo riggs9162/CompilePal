@@ -55,3 +55,7 @@ The workspace update passed 62 compiler checks, 32 compile-lifecycle checks (inc
 ## SourceCubemap stage, v029.5
 
 The SOURCECUBEMAP update passed 62 compiler checks, 32 compile-lifecycle checks, and 32 production-WPF workspace checks. A separate local run drove the real compile manager and the published SourceCubemap 0.7.01 through 39 checks on copied maps. Windows x64 self-contained publication succeeded. See [what was tested and what was not](sourcecubemap.md#validation).
+
+## Mounted content packing, v029.6
+
+The update passed 62 compiler checks, 32 compile-lifecycle checks, and 32 production-WPF workspace checks. A separate local run confirmed that PACK's content search reads `cfg/mount.cfg`, resolving all 22 active entries of a real Garry's Mod configuration. It also ignored commented-out entries, accepted forward and backward slashes, merged duplicates, and reported missing folders and unreadable files without stopping. Packing an asset from a mounted folder through a full compile, and loading the result in-game, remain manual checks.

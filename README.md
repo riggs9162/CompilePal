@@ -31,7 +31,7 @@ dotnet publish CompilePalX/CompilePalX.csproj -c Release -r win-x64 --self-conta
 
 The branding uses bright pink `#FF3B9D` with dark text on selected controls. Warning and error severity colors retain their original meaning. The icon uses the original Compile Pal hammer design recolored pink, with its white and gray borders retained. The [PNG source](CompilePalX/Branding/CompilePalPlusPlus.png) is shared by the app and README; regenerate its Windows icon with `powershell -STA -File CompilePalX/Branding/Export-Icon.ps1`.
 
-CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. Get the complete Windows ZIP from the [CompilePal++ 029.5 prerelease](https://github.com/riggs9162/CompilePal/releases/tag/v029.5). The separately attached EXE is for replacing the executable in an existing complete installation; it still needs the accompanying configuration and resource files.
+CompilePal++ builds on [Compile Pal](https://github.com/ruarai/CompilePal). Its [upstream releases](https://github.com/ruarai/CompilePal/releases/latest) do not contain this fork's changes. Get the complete Windows ZIP from the [CompilePal++ 029.5 prerelease](https://github.com/riggs9162/CompilePal/releases/tag/v029.6). The separately attached EXE is for replacing the executable in an existing complete installation; it still needs the accompanying configuration and resource files.
 
 The default branch is `toolspp/standalone-support`. The update checker reads this branch and links to releases in `riggs9162/CompilePal`; it never installs updates automatically. The Windows workflow tests and publishes build artifacts. Releases are tagged from reviewed commits and supplied with validated builds, without the upstream workflow's automatic version commits.
 
@@ -40,7 +40,7 @@ The default branch is `toolspp/standalone-support`. The update checker reads thi
 
 The [workspace guide](docs/workspace.md) covers the persistent map queue and output, searchable stage options with checkboxes and value fields, tool-path checks, stage status, and the cogwheel Settings menu. Choose System, Dark, or Light appearance, compact spacing, log text size, and remembered panel sizes.
 
-For 029.5, update using the full ZIP so the new SOURCECUBEMAP stage is included. Keep your existing presets and game configuration. No Tools++ binaries or private presets are bundled.
+For 029.6, replacing the EXE is enough to pack content from folders listed in `cfg/mount.cfg`. Use the full ZIP to get the new Ultra preset and refreshed stage settings. Keep your existing presets and game configuration. No Tools++ binaries or private presets are bundled.
 
 ## Features
 * Packing
