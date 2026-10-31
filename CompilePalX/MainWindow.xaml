@@ -322,6 +322,9 @@
                             <DataTrigger Binding="{Binding Name}" Value="CUBEMAPS">
                               <Setter Property="Kind" Value="CubeScan"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding Name}" Value="SOURCECUBEMAP">
+                              <Setter Property="Kind" Value="CubeScan"/>
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding Name}" Value="REPACK">
                               <Setter Property="Kind" Value="Archive"/>
                             </DataTrigger>

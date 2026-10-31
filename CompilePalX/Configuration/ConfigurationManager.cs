@@ -114,6 +114,7 @@ namespace CompilePalX
 
             CompileProcesses.Add(new BSPPack());
             CompileProcesses.Add(new CubemapProcess());
+            CompileProcesses.Add(new SourceCubemapProcess());
             CompileProcesses.Add(new NavProcess());
             CompileProcesses.Add(new ShutdownProcess());
             CompileProcesses.Add(new UtilityProcess());

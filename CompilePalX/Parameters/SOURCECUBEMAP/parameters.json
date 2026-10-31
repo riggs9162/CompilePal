@@ -1,0 +1,61 @@
+[
+  {
+    "Name": "Quality",
+    "Parameter": " --quality",
+    "Description": "fast, standard or high. High renders at double resolution for sharper textures.",
+    "Value": "standard",
+    "CanHaveValue": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Lighting",
+    "Parameter": " --hdr",
+    "Description": "auto, ldr, hdr or both. Auto builds whatever lighting the map has.",
+    "Value": "auto",
+    "CanHaveValue": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Game Rules",
+    "Parameter": " --profile",
+    "Description": "gmod or hl2. Chosen from the game by default. Only gmod reads the game's mounted content from cfg/mount.cfg.",
+    "Value": "hl2",
+    "CanHaveValue": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Extra Content",
+    "Parameter": " --mount",
+    "Description": "Adds a content folder or archive that the game does not load by itself.",
+    "Value": "",
+    "CanHaveValue": true,
+    "ValueIsFolder": true,
+    "Warning": "",
+    "CanBeUsedMoreThanOnce": true
+  },
+  {
+    "Name": "Graphics Card",
+    "Parameter": " --device",
+    "Description": "Uses the graphics card whose name contains this word, such as 3050.",
+    "Value": "",
+    "CanHaveValue": true,
+    "Warning": ""
+  },
+  {
+    "Name": "Strict",
+    "Parameter": " -strict",
+    "Description": "Stops the compile at the first thing SourceCubemap can't reproduce exactly, instead of using the closest match.",
+    "Value": null,
+    "CanHaveValue": false,
+    "Warning": "Many maps need the default behaviour to finish."
+  },
+  {
+    "Name": "Command Line Argument",
+    "Parameter": "",
+    "Description": "Passes value as a command line argument",
+    "Value": "",
+    "CanHaveValue": true,
+    "Warning": "",
+    "CanBeUsedMoreThanOnce": true
+  }
+]
