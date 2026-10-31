@@ -45,7 +45,7 @@ Garry's Mod uses `gmod` rules, which also read its addons and `cfg/mount.cfg`. E
 
 ## Validation
 
-These checks ran on Windows 11 with an RTX 3050, SourceCubemap 0.7.00, and the real compile manager:
+These checks ran on Windows 11 with an RTX 3050, SourceCubemap 0.7.01, and the real compile manager:
 
 - `gm_flatgrass` compiled from a VMF and as a queued BSP, in folders with spaces. Both passed `sourcecubemap validate`.
 - The VMF compile left no backup, and the queued BSP kept one.
@@ -54,5 +54,6 @@ These checks ran on Windows 11 with an RTX 3050, SourceCubemap 0.7.00, and the r
 - Cancelling `d2_coast_09` mid-build left the map untouched, left no extra files, and ended the tool.
 - `background02` finished with a warning about its 7 missing assets.
 - A missing tool path stopped the stage and named **Game & tools**, and **Check tools** reported it first.
+- An older installation with only `CompilePalX.exe` replaced still starts, without this stage.
 
 The final maps were not loaded in-game, and no compile ran through VBSP, VVIS, and VRAD before this stage. Those checks used maps that were already compiled.
