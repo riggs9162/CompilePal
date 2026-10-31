@@ -680,9 +680,63 @@ namespace CompilePalX.Compilers.BSPPack
                     }
                 }
 
+                //find Garry's Mod content mount paths
+                var mountCfgDirectories = GetMountCfgSourceDirectories(Path.Combine(gamePath, "cfg", "mount.cfg"));
+                sourceDirectories.AddRange(mountCfgDirectories);
+                if (verbose)
+                {
+                    foreach (var directory in mountCfgDirectories)
+                    {
+                        CompilePalLogger.LogLine($"Found mounted search path: {directory}");
+                    }
+                }
+
             }
 
             return sourceDirectories.Distinct().ToList();
+        }
+
+        /// <summary>
+        /// Finds additional source directories for Garry's Mod content mounts.
+        /// Files inside a mounted game's vpks are not searchable, only its loose files are.
+        /// </summary>
+        /// <param name="mountCfgPath">Path to mount.cfg</param>
+        /// <returns>A list of additional source directories to search</returns>
+        private static List<string> GetMountCfgSourceDirectories(string mountCfgPath)
+        {
+            var directories = new List<string>();
+            if (!File.Exists(mountCfgPath))
+            {
+                CompilePalLogger.LogLineDebug("No mount.cfg detected");
+                return directories;
+            }
+
+            KVObject mountCfg;
+            try
+            {
+                using var mountCfgFile = File.OpenRead(mountCfgPath);
+                mountCfg = KVSerializer.Deserialize(mountCfgFile);
+            }
+            catch (KeyValueException e)
+            {
+                CompilePalLogger.LogDebug($"Failed to parse {mountCfgPath}: {e}");
+                CompilePalLogger.LogCompileError($"Failed to parse {mountCfgPath}, ignoring it\n", new Error($"Failed to parse {mountCfgPath}, ignoring it", ErrorSeverity.Caution));
+                return directories;
+            }
+
+            foreach (var mount in mountCfg.Children)
+            {
+                string mountPath = mount.Value.ToString();
+                if (!Directory.Exists(mountPath))
+                {
+                    CompilePalLogger.LogCompileError($"Mounted folder {mountPath} does not exist, ignoring\n", new Error($"Mounted folder {mountPath} does not exist, ignoring", ErrorSeverity.Caution));
+                    continue;
+                }
+
+                directories.Add(Path.GetFullPath(mountPath));
+            }
+
+            return directories;
         }
 
         /// <summary>
