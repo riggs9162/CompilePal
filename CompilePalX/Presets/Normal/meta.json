@@ -1,6 +1,7 @@
-﻿{
+{
   "Name": "Normal",
   "Map": null,
+  "MapRegex": null,
   "Processes": {
     "VBSP": [],
     "VVIS": [],

@@ -1,12 +1,18 @@
 {
   "Name": "GAME",
   "Path": "$gameEXE$",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 13.0,
-  "DoRun": false,
+  "DoRun": true,
   "ReadOutput": false,
   "Description": "Launch the game with your map.",
   "Warning": "",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": " -game $game$ +map $map$",
-  "SupportsBSP": true
+  "SupportsBSP": true,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

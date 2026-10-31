@@ -1,14 +1,18 @@
 {
   "Name": "STATS",
   "Path": "$vbspInfo$",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 14.0,
   "DoRun": true,
   "ReadOutput": true,
   "Description": "Outputs statistics similar to those of VRAD.",
   "Warning": "",
   "PresetDefault": false,
+  "CheckExitCode": false,
   "BasisString": " -treeinfo $mapCopyLocation$",
   "SupportsBSP": true,
-  "CheckExitCode": false,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
   "WorkingDirectory": "$binFolder$"
 }

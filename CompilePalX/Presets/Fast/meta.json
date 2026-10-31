@@ -1,23 +1,36 @@
-﻿{
+{
   "Name": "Fast",
   "Map": null,
+  "MapRegex": null,
   "Processes": {
     "VBSP": [],
     "VVIS": [
       {
-        "Name": "Fast"
+        "Name": "Fast",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
       },
       {
-        "Name": "No Sort"
+        "Name": "No Sort",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
       }
     ],
     "VRAD": [
       {
-        "Name": "Fast"
+        "Name": "Fast",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
       },
       {
         "Name": "Bounces",
-        "Value": "2"
+        "Value": "2",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
       }
     ],
     "COPY": [],

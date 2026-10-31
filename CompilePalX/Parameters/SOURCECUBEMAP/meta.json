@@ -1,12 +1,18 @@
 {
   "Name": "SOURCECUBEMAP",
   "Path": "builtin",
+  "IsExternal": false,
+  "Arguments": "",
   "Order": 11.1,
   "DoRun": true,
   "ReadOutput": true,
   "Description": "Builds cubemaps in seconds with SourceCubemap, without starting the game.",
   "Warning": "Reflections are close to the game's own but not identical. Test the map in-game before shipping it.",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": "",
-  "SupportsBSP": true
+  "SupportsBSP": true,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

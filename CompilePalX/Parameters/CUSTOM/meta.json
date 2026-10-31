@@ -1,12 +1,18 @@
 {
   "Name": "CUSTOM",
   "Path": "",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 15.0,
   "DoRun": false,
   "ReadOutput": false,
   "Description": "Run custom build steps.",
   "Warning": "",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": "",
-  "SupportsBSP": true
+  "SupportsBSP": true,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

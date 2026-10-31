@@ -1,15 +1,20 @@
 {
   "Name": "NAV",
   "Path": "builtin",
+  "IsExternal": false,
+  "Arguments": "",
   "Order": 8.0,
   "DoRun": false,
   "ReadOutput": true,
   "Description": "Basic Generation of a nav mesh.",
   "Warning": "Game client must be closed in order to work.",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": "",
   "SupportsBSP": true,
   "IncompatibleGames": [
-    4000 // gmod. Does not support map cfgs
-  ]
+    4000
+  ],
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

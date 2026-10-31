@@ -1,13 +1,18 @@
 {
   "Name": "VVIS",
   "Path": "$vvis$",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 2.0,
   "DoRun": true,
   "ReadOutput": true,
   "Description": "Performs visibility tests for optimization.",
   "Warning": "",
   "PresetDefault": false,
-  "BasisString": " -game $game$ $vmfFile$",
   "CheckExitCode": false,
+  "BasisString": " -game $game$ $vmfFile$",
+  "SupportsBSP": false,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
   "WorkingDirectory": "$binFolder$"
 }

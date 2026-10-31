@@ -1,21 +1,34 @@
-﻿{
+{
   "Name": "Full - LDR",
   "Map": null,
+  "MapRegex": null,
   "Processes": {
     "VBSP": [],
     "VVIS": [],
     "VRAD": [
       {
-        "Name": "Final"
+        "Name": "Final",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " "
       },
       {
-        "Name": "Static Prop Lighting"
+        "Name": "Static Prop Lighting",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": " always enabled for light_spot entities."
       },
       {
-        "Name": "Static Prop Polys"
+        "Name": "Static Prop Polys",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
       },
       {
-        "Name": "LDR"
+        "Name": "LDR",
+        "ReadOutput": false,
+        "WaitForExit": false,
+        "Order": ""
       }
     ],
     "COPY": [],

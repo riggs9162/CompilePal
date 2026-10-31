@@ -1,19 +1,22 @@
 {
   "Name": "REPACK",
   "Path": "$bspZip$",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 12.0,
-  "DoRun": false,
+  "DoRun": true,
   "ReadOutput": true,
   "Description": "BSPzip.exe's BSP Compression.",
   "Warning": "",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": " -game $game$ -repack -compress $mapCopyLocation$",
   "SupportsBSP": true,
+  "IncompatibleGames": null,
   "CompatibleGames": [
-    440, // tf2
-    240, // cs:s
-    669270 // momentum mod
+    440,
+    240,
+    669270
   ],
-  "CheckExitCode": true,
   "WorkingDirectory": "$binFolder$"
 }

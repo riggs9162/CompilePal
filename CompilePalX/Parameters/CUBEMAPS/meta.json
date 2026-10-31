@@ -1,12 +1,18 @@
 {
   "Name": "CUBEMAPS",
   "Path": "builtin",
+  "IsExternal": false,
+  "Arguments": "",
   "Order": 11.0,
   "DoRun": false,
   "ReadOutput": true,
   "Description": "Builds cubemaps automatically.",
   "Warning": "Game client must be closed in order to work.",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": " ",
-  "SupportsBSP": true
+  "SupportsBSP": true,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

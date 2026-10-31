@@ -1,15 +1,20 @@
 {
   "Name": "PACK",
   "Path": "builtin",
+  "IsExternal": false,
+  "Arguments": "",
   "Order": 10.0,
   "DoRun": true,
   "ReadOutput": true,
   "Description": "Finds map dependencies and includes them in the .bsp.",
   "Warning": "",
   "PresetDefault": false,
+  "CheckExitCode": true,
   "BasisString": " -game $game$ -bsp $bsp$ -bspZip $bspZip$ -keys $keys$",
   "SupportsBSP": true,
   "IncompatibleGames": [
-    4000 // gmod. Certain distributions dont have bspzip.exe
-  ]
+    4000
+  ],
+  "CompatibleGames": null,
+  "WorkingDirectory": null
 }

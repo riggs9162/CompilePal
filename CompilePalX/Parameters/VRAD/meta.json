@@ -1,13 +1,18 @@
 {
   "Name": "VRAD",
   "Path": "$vrad$",
+  "IsExternal": true,
+  "Arguments": "",
   "Order": 3.0,
   "DoRun": true,
   "ReadOutput": true,
   "Description": "Generates static lighting.",
   "Warning": "",
   "PresetDefault": false,
-  "BasisString": " -game $game$ $vmfFile$",
   "CheckExitCode": false,
+  "BasisString": " -game $game$ $vmfFile$",
+  "SupportsBSP": false,
+  "IncompatibleGames": null,
+  "CompatibleGames": null,
   "WorkingDirectory": "$binFolder$"
 }
