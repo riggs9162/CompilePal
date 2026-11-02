@@ -185,6 +185,7 @@ namespace CompilePalX
                         currentCompileProcess = compileProcess;
                         StageChanged?.Invoke(compileProcess, $"Running · {cleanMapName}");
                         var stageTime = Stopwatch.StartNew();
+                        bool syncRepackedMap = compileProcess.Name == "REPACK" && IsMapCopyCurrent(buildContext);
                         try
                         {
                             compileProcess.Run(buildContext, cancellationToken);
@@ -202,6 +203,9 @@ namespace CompilePalX
                             throw;
                         }
                         cancellationToken.ThrowIfCancellationRequested();
+
+                        if (syncRepackedMap)
+                            CopyRepackedMapToVmfFolder(buildContext);
 
                         compileErrors.AddRange(currentCompileProcess.CompileErrors);
 
@@ -255,6 +259,37 @@ namespace CompilePalX
                         ProgressManager.ErrorProgress();
                         OutcomeChanged?.Invoke("Compile stopped before completion. Review output.");
                     });
+            }
+        }
+
+        /// <summary>
+        /// Checks whether the maps folder holds this compile's BSP, separately from the one beside the VMF.
+        /// A copy older than the VMF folder's BSP is left over from an earlier compile.
+        /// </summary>
+        private static bool IsMapCopyCurrent(CompileContext context)
+        {
+            return File.Exists(context.BSPFile)
+                && File.Exists(context.CopyLocation)
+                && !Path.GetFullPath(context.CopyLocation).Equals(Path.GetFullPath(context.BSPFile), StringComparison.OrdinalIgnoreCase)
+                && File.GetLastWriteTimeUtc(context.CopyLocation) >= File.GetLastWriteTimeUtc(context.BSPFile);
+        }
+
+        /// <summary>
+        /// Replaces the BSP beside the VMF with the compressed BSP from the maps folder.
+        /// A failed copy is reported without stopping the stages that follow.
+        /// </summary>
+        private static void CopyRepackedMapToVmfFolder(CompileContext context)
+        {
+            try
+            {
+                CompilePalLogger.LogLine("Copying repacked bsp to vmf folder...");
+                CompilePalLogger.LogLineDebug($"Copying {context.CopyLocation} to {context.BSPFile}");
+                File.Copy(context.CopyLocation, context.BSPFile, true);
+            }
+            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+            {
+                CompilePalLogger.LogCompileError($"Could not copy repacked bsp to {context.BSPFile}: {exception.Message}\n",
+                    new Error($"Could not copy repacked bsp to {context.BSPFile}", ErrorSeverity.Error));
             }
         }
 
