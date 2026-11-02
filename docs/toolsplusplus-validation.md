@@ -59,3 +59,7 @@ The SOURCECUBEMAP update passed 62 compiler checks, 32 compile-lifecycle checks,
 ## Mounted content packing, v029.6
 
 The update passed 62 compiler checks, 32 compile-lifecycle checks, and 32 production-WPF workspace checks. A separate local run confirmed that PACK's content search reads `cfg/mount.cfg`, resolving all 22 active entries of a real Garry's Mod configuration. It also ignored commented-out entries, accepted forward and backward slashes, merged duplicates, and reported missing folders and unreadable files without stopping. Packing an asset from a mounted folder through a full compile, and loading the result in-game, remain manual checks.
+
+## Repacked map output, v029.7
+
+The update passed 62 compiler checks, 32 compile-lifecycle checks, and 32 production-WPF workspace checks. A separate local harness ran the REPACK, VVIS, VRAD, and COPY stage logic through 11 checks on small generated BSP headers with a stand-in tool. It confirmed that both folders end up with the same compressed BSP, the uncompressed BSP is kept as `.bsp.unpacked`, a stale maps-folder copy never overwrites a fresh BSP, and a backup is restored only when the BSP is compressed. A manual read of a real compressed and uncompressed Garry's Mod map's headers matched the format the compression check looks for. Running REPACK through a full compile, restoring a real map in a compile without VBSP, and loading the result in-game remain manual checks.
