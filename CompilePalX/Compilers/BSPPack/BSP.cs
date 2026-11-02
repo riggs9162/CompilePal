@@ -124,6 +124,23 @@ namespace CompilePalX.Compilers.BSPPack
             }
         }
 
+        /// <summary>
+        /// Checks whether a BSP's lumps are LZMA compressed, without loading the rest of the file.
+        /// </summary>
+        public static bool IsCompressed(string path)
+        {
+            using var bsp = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var reader = new BinaryReader(bsp);
+
+            bsp.Seek(4, SeekOrigin.Begin);
+            int version = reader.ReadInt32();
+            int firstField = reader.ReadInt32();
+            int entityLumpOffset = firstField == 0 && version == 21 ? reader.ReadInt32() : firstField;
+
+            bsp.Seek(entityLumpOffset, SeekOrigin.Begin);
+            return reader.ReadBytes(4).SequenceEqual(Encoding.ASCII.GetBytes("LZMA"));
+        }
+
         public void buildEntityList(FileStream bsp, BinaryReader reader)
         {
             entityList = [];

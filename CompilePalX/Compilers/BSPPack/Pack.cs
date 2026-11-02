@@ -487,6 +487,7 @@ namespace CompilePalX.Compilers.BSPPack
 
                 CompilePalLogger.LogLineDebug($"Copying {context.BSPFile} to {context.BSPFile}.unpacked");
                 File.Copy(context.BSPFile, context.BSPFile + ".unpacked");
+                context.HasUnpackedBackup = true;
             }
 
             CompilePalLogger.LogLine("Running bspzip...");

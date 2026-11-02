@@ -227,5 +227,6 @@ namespace CompilePalX
         public GameConfiguration Configuration;
         public string BSPFile;
         public string CopyLocation;
+        public bool HasUnpackedBackup;
     }
 }
