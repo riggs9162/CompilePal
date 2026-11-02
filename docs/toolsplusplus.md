@@ -24,7 +24,7 @@ CUBEMAPS and STATS still need the game's `vbspinfo.exe`; VPK workflows still nee
 
 CUBEMAPS requires a successful VBSPInfo inspection and a successful game process. Missing, failed or unreadable utility output now stops the stage instead of guessing a lighting mode and reporting success. Single-mode builds explicitly select the detected HDR/LDR mode. Real cubemap generation still requires the installed game and a usable graphics environment.
 
-Run CUBEMAPS before REPACK. The installed stock GMod VBSPInfo cannot inspect compressed Tools++ output. CompilePal's PACK asset scanner also cannot read compressed BSP lumps; decompress first if packing an already compressed BSP. BSPZIP++ compression support does not remove these application/utility limitations.
+REPACK compresses the BSP in the maps folder, then copies it over the BSP beside the VMF, so both folders hold the same file. Run CUBEMAPS before REPACK. The installed stock GMod VBSPInfo cannot inspect compressed Tools++ output. CompilePal's PACK asset scanner also cannot read compressed BSP lumps; decompress first if packing an already compressed BSP. BSPZIP++ compression support does not remove these application/utility limitations.
 
 For Garry's Mod, PACK also searches the folders listed in `cfg/mount.cfg`, after the game's own content. It can only pack loose files, so assets inside a mounted game's `.vpk` files must be extracted first and added with **Add Source Directory**. A listed folder that does not exist is reported and skipped.
 
