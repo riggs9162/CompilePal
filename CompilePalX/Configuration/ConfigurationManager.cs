@@ -146,7 +146,7 @@ namespace CompilePalX
 
                 try
                 {
-                    var compileProcess = new CompileExecutable(folderName, parameterFolder);
+                    var compileProcess = CreateExecutable(folderName, parameterFolder);
                     CompileProcesses.Add(compileProcess);
                 }
                 catch (Exception ex)
@@ -167,7 +167,7 @@ namespace CompilePalX
 
                 try
                 {
-                    var compileProcess = new CompileExecutable(name);
+                    var compileProcess = CreateExecutable(name);
                     CompileProcesses.Add(compileProcess);
                 }
                 catch (Exception ex)
@@ -179,6 +179,19 @@ namespace CompilePalX
             CompileProcesses = new ObservableCollection<CompileProcess>(CompileProcesses.OrderBy(c => c.Metadata.Order));
 
             AssemblePresets();
+        }
+
+        /// <summary>
+        /// Creates the process for an external stage, using the stage class that handles its BSP backups.
+        /// </summary>
+        private static CompileExecutable CreateExecutable(string name, string? parameterFolder = null)
+        {
+            return name.ToUpperInvariant() switch
+            {
+                "VVIS" or "VRAD" or "COPY" => new UnpackedBspStage(name, parameterFolder),
+                "REPACK" => new RepackProcess(name, parameterFolder),
+                _ => new CompileExecutable(name, parameterFolder),
+            };
         }
 
         private static void AssemblePresets()

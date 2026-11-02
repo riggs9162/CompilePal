@@ -13,7 +13,6 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using CompilePalX.Compilers;
-using CompilePalX.Compilers.BSPPack;
 using CompilePalX.Compiling;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -180,14 +179,12 @@ namespace CompilePalX
                     GameConfigurationManager.BackupCurrentContext();
                     contextBackedUp = true;
                     var buildContext = GameConfigurationManager.BuildContext(map);
-                    RestoreUnpackedMap(buildContext);
 					foreach (var compileProcess in OrderManager.CurrentOrder)
 					{
                         cancellationToken.ThrowIfCancellationRequested();
                         currentCompileProcess = compileProcess;
                         StageChanged?.Invoke(compileProcess, $"Running · {cleanMapName}");
                         var stageTime = Stopwatch.StartNew();
-                        bool syncRepackedMap = compileProcess.Name == "REPACK" && IsMapCopyCurrent(buildContext);
                         try
                         {
                             compileProcess.Run(buildContext, cancellationToken);
@@ -205,9 +202,6 @@ namespace CompilePalX
                             throw;
                         }
                         cancellationToken.ThrowIfCancellationRequested();
-
-                        if (syncRepackedMap)
-                            CopyRepackedMapToVmfFolder(buildContext);
 
                         compileErrors.AddRange(currentCompileProcess.CompileErrors);
 
@@ -261,77 +255,6 @@ namespace CompilePalX
                         ProgressManager.ErrorProgress();
                         OutcomeChanged?.Invoke("Compile stopped before completion. Review output.");
                     });
-            }
-        }
-
-        /// <summary>
-        /// Checks whether the maps folder holds this compile's BSP, separately from the one beside the VMF.
-        /// A copy older than the VMF folder's BSP is left over from an earlier compile.
-        /// </summary>
-        private static bool IsMapCopyCurrent(CompileContext context)
-        {
-            return File.Exists(context.BSPFile)
-                && File.Exists(context.CopyLocation)
-                && !Path.GetFullPath(context.CopyLocation).Equals(Path.GetFullPath(context.BSPFile), StringComparison.OrdinalIgnoreCase)
-                && File.GetLastWriteTimeUtc(context.CopyLocation) >= File.GetLastWriteTimeUtc(context.BSPFile);
-        }
-
-        /// <summary>
-        /// Replaces the BSP beside the VMF with the compressed BSP from the maps folder.
-        /// The uncompressed BSP stays available as .bsp.unpacked, and a backup PACK made during
-        /// this compile is kept because it has no packed assets in it.
-        /// A failed copy is reported without stopping the stages that follow.
-        /// </summary>
-        private static void CopyRepackedMapToVmfFolder(CompileContext context)
-        {
-            try
-            {
-                if (!context.HasUnpackedBackup && !BSP.IsCompressed(context.BSPFile))
-                {
-                    CompilePalLogger.LogLineDebug($"Copying {context.BSPFile} to {context.BSPFile}.unpacked");
-                    File.Copy(context.BSPFile, context.BSPFile + ".unpacked", true);
-                }
-
-                CompilePalLogger.LogLine("Copying repacked bsp to vmf folder...");
-                CompilePalLogger.LogLineDebug($"Copying {context.CopyLocation} to {context.BSPFile}");
-                File.Copy(context.CopyLocation, context.BSPFile, true);
-            }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
-            {
-                CompilePalLogger.LogCompileError($"Could not copy repacked bsp to {context.BSPFile}: {exception.Message}\n",
-                    new Error($"Could not copy repacked bsp to {context.BSPFile}", ErrorSeverity.Error));
-            }
-        }
-
-        /// <summary>
-        /// Puts the uncompressed .bsp.unpacked back beside the VMF when this compile reuses that BSP.
-        /// VBSP replaces the BSP itself, so compiles that run it need no restore.
-        /// </summary>
-        private static void RestoreUnpackedMap(CompileContext context)
-        {
-            string[] bspReadingStages = ["VVIS", "VRAD", "COPY"];
-            string unpackedFile = context.BSPFile + ".unpacked";
-
-            if (context.Map.IsBSP
-                || OrderManager.CurrentOrder.Any(process => process.Name == "VBSP")
-                || !OrderManager.CurrentOrder.Any(process => bspReadingStages.Contains(process.Name))
-                || !File.Exists(context.BSPFile)
-                || !File.Exists(unpackedFile))
-                return;
-
-            try
-            {
-                if (!BSP.IsCompressed(context.BSPFile))
-                    return;
-
-                CompilePalLogger.LogLine($"Restoring uncompressed bsp from .unpacked backup dated {File.GetLastWriteTime(unpackedFile):yyyy-MM-dd HH:mm}...");
-                CompilePalLogger.LogLineDebug($"Copying {unpackedFile} to {context.BSPFile}");
-                File.Copy(unpackedFile, context.BSPFile, true);
-            }
-            catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
-            {
-                CompilePalLogger.LogCompileError($"Could not restore {context.BSPFile} from its .unpacked backup: {exception.Message}\n",
-                    new Error($"Could not restore {context.BSPFile} from its .unpacked backup", ErrorSeverity.Error));
             }
         }
 
