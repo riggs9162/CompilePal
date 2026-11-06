@@ -69,6 +69,7 @@ namespace CompilePalX.Compilers.BSPPack
             bool includefilelist = GetParameterString().Contains("-includefilelist");
             bool addSourceDirectory = GetParameterString().Contains("-sourcedirectory");
             bool noswvtx = GetParameterString().Contains("-noswvtx");
+            bool noMountedVpk = GetParameterString().Contains("-nomountedvpk");
             bool generateDetailedReport = GetParameterString().Contains("-detailedreport");
 
             char[] paramChars = GetParameterString().ToCharArray();
@@ -246,7 +247,7 @@ namespace CompilePalX.Compilers.BSPPack
                         CompilePalLogger.LogLine(sourceDirectory);
                 }
 
-                var mountedArchives = GetMountedArchivePaths(gameFolder)
+                var mountedArchives = noMountedVpk ? [] : GetMountedArchivePaths(gameFolder)
                     .Where(path => !excludeDirs.Any(path.ToLower().Replace('/', '\\').StartsWith))
                     .ToList();
                 var mountedContent = new MountedArchiveContent(MountedArchiveContent.FindGameArchives(gameFolder), mountedArchives, mountedContentFolder);

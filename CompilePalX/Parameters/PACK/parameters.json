@@ -156,5 +156,16 @@
     "Value": null,
     "CanHaveValue": false,
     "Warning": ""
+  },
+  {
+    "Name": "No Mounted Game VPKs",
+    "Parameter": " -nomountedvpk",
+    "Description": "Only pack loose files. Assets that exist only inside the .vpk archives of games listed in mount.cfg are left out, so players need those games to see them.",
+    "Value": null,
+    "CanHaveValue": false,
+    "Warning": "",
+    "CompatibleGames": [
+      4000 //gmod
+    ]
   }
 ]
