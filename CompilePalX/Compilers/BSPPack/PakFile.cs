@@ -150,6 +150,7 @@ namespace CompilePalX.Compilers.BSPPack
         private List<string> excludedVpkFiles;
 
         private List<string> sourceDirs;
+        private MountedArchiveContent? mountedContent;
         private string fileName;
 
         public int mdlcount { get; private set; }
@@ -163,11 +164,14 @@ namespace CompilePalX.Compilers.BSPPack
 
         private bool noSwvtx;
 
-        public PakFile(BSP bsp, List<string> sourceDirectories, List<string> includeFiles, List<string> excludedFiles, 
-            List<string> excludedDirs, List<string> excludedVpkFiles, string outputFile, bool noswvtx)
+        /// <param name="mountedContent">Assets inside mounted games' archives, searched when no loose file is found. Null searches loose files only.</param>
+        public PakFile(BSP bsp, List<string> sourceDirectories, List<string> includeFiles, List<string> excludedFiles,
+            List<string> excludedDirs, List<string> excludedVpkFiles, string outputFile, bool noswvtx,
+            MountedArchiveContent? mountedContent = null)
         {
             mdlcount = vmtcount = pcfcount = soundcount = vehiclescriptcount = effectscriptcount = PanoramaMapBackgroundCount = 0;
             sourceDirs = sourceDirectories;
+            this.mountedContent = mountedContent;
             fileName = outputFile;
             noSwvtx = noswvtx;
 
@@ -515,7 +519,7 @@ namespace CompilePalX.Compilers.BSPPack
             foreach (string source in sourceDirs)
                 if (File.Exists(Path.Combine(source, sanitizedPath)))
                     return Path.Combine(source, sanitizedPath.Replace("\\", "/"));
-            return "";
+            return mountedContent?.FindFile(sanitizedPath) ?? "";
         }
 
         private List<string> FindExternalDirectories(string internalPath)

@@ -48,6 +48,7 @@ namespace CompilePalX.Compilers.BSPPack
 
         private List<string> sourceDirectories = [];
         private string outputFile = "BSPZipFiles\\files.txt";
+        private const string mountedContentFolder = "BSPZipFiles\\MountedContent";
 
         public override void Run(CompileContext context, CancellationToken cancellationToken)
         {
@@ -245,6 +246,18 @@ namespace CompilePalX.Compilers.BSPPack
                         CompilePalLogger.LogLine(sourceDirectory);
                 }
 
+                var mountedArchives = GetMountedArchivePaths(gameFolder)
+                    .Where(path => !excludeDirs.Any(path.ToLower().Replace('/', '\\').StartsWith))
+                    .ToList();
+                var mountedContent = new MountedArchiveContent(MountedArchiveContent.FindGameArchives(gameFolder), mountedArchives, mountedContentFolder);
+                if (mountedContent.MountedArchiveCount > 0)
+                {
+                    CompilePalLogger.LogLine($"Found {mountedContent.MountedArchiveCount} archives in mounted games");
+                    if (verbose)
+                        foreach (var archive in mountedArchives)
+                            CompilePalLogger.LogLine(archive);
+                }
+
                 CompilePalLogger.LogLine("Reading BSP...");
 
                 BSP map;
@@ -276,7 +289,7 @@ namespace CompilePalX.Compilers.BSPPack
 
                 CompilePalLogger.LogLine("Initializing pak file...");
                 PakFile pakfile = new PakFile(map, sourceDirectories, includeFiles, excludeFiles, excludeDirs,
-                    excludedVpkFiles, outputFile, noswvtx);
+                    excludedVpkFiles, outputFile, noswvtx, mountedContent);
 
                 if (includefilelist)
                 {
@@ -356,6 +369,9 @@ namespace CompilePalX.Compilers.BSPPack
                         return;
 
                     CompilePalLogger.LogLine("Running VPK...");
+                    if (mountedContent.ExtractedFileCount > 0)
+                        sourceDirectories.Add(mountedContent.ExtractionFolder);
+
                     foreach (var path in sourceDirectories)
                     {
                         var testedFiles = "";
@@ -410,6 +426,8 @@ namespace CompilePalX.Compilers.BSPPack
                 CompilePalLogger.LogLine(pakfile.mdlcount + " models found");
                 CompilePalLogger.LogLine(pakfile.pcfcount + " particle files found");
                 CompilePalLogger.LogLine(pakfile.soundcount + " sounds found");
+                if (mountedContent.ExtractedFileCount != 0)
+                    CompilePalLogger.LogLine(mountedContent.ExtractedFileCount + " files unpacked from mounted game archives");
                 if (pakfile.vehiclescriptcount != 0)
                     CompilePalLogger.LogLine(pakfile.vehiclescriptcount + " vehicle scripts found");
                 if (pakfile.effectscriptcount != 0)
@@ -698,12 +716,27 @@ namespace CompilePalX.Compilers.BSPPack
         }
 
         /// <summary>
+        /// Finds the VPK archives inside the folders that Garry's Mod mounts through cfg/mount.cfg,
+        /// in the order the folders are listed.
+        /// </summary>
+        /// <param name="gamePath">Game folder that holds the cfg folder</param>
+        /// <returns>Full paths of the archives' <c>_dir.vpk</c> files</returns>
+        public static List<string> GetMountedArchivePaths(string gamePath)
+        {
+            return GetMountCfgSourceDirectories(Path.Combine(gamePath, "cfg", "mount.cfg"), false)
+                .SelectMany(MountedArchiveContent.FindArchiveIndexes)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
+        /// <summary>
         /// Finds additional source directories for Garry's Mod content mounts.
-        /// Files inside a mounted game's vpks are not searchable, only its loose files are.
+        /// Only loose files are found here; <see cref="GetMountedArchivePaths"/> finds the mounted games' archives.
         /// </summary>
         /// <param name="mountCfgPath">Path to mount.cfg</param>
+        /// <param name="reportProblems">Whether an unreadable mount.cfg or a missing folder is reported as a compile warning</param>
         /// <returns>A list of additional source directories to search</returns>
-        private static List<string> GetMountCfgSourceDirectories(string mountCfgPath)
+        private static List<string> GetMountCfgSourceDirectories(string mountCfgPath, bool reportProblems = true)
         {
             var directories = new List<string>();
             if (!File.Exists(mountCfgPath))
@@ -721,7 +754,8 @@ namespace CompilePalX.Compilers.BSPPack
             catch (KeyValueException e)
             {
                 CompilePalLogger.LogDebug($"Failed to parse {mountCfgPath}: {e}");
-                CompilePalLogger.LogCompileError($"Failed to parse {mountCfgPath}, ignoring it\n", new Error($"Failed to parse {mountCfgPath}, ignoring it", ErrorSeverity.Caution));
+                if (reportProblems)
+                    CompilePalLogger.LogCompileError($"Failed to parse {mountCfgPath}, ignoring it\n", new Error($"Failed to parse {mountCfgPath}, ignoring it", ErrorSeverity.Caution));
                 return directories;
             }
 
@@ -730,7 +764,8 @@ namespace CompilePalX.Compilers.BSPPack
                 string mountPath = mount.Value.ToString();
                 if (!Directory.Exists(mountPath))
                 {
-                    CompilePalLogger.LogCompileError($"Mounted folder {mountPath} does not exist, ignoring\n", new Error($"Mounted folder {mountPath} does not exist, ignoring", ErrorSeverity.Caution));
+                    if (reportProblems)
+                        CompilePalLogger.LogCompileError($"Mounted folder {mountPath} does not exist, ignoring\n", new Error($"Mounted folder {mountPath} does not exist, ignoring", ErrorSeverity.Caution));
                     continue;
                 }
 
